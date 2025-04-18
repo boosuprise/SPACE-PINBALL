@@ -1,0 +1,14 @@
+﻿  pch.cpp
+  dllmain.cpp
+  Game.cpp
+  GameApp.cpp
+  Graphics.cpp
+  SDL_collide.cpp
+  Sound.cpp
+  Sprite.cpp
+  SpriteOval.cpp
+  SpriteRect.cpp
+  SpriteText.cpp
+  Generating Code...
+     Creating library C:\Users\lucas\Downloads\gfc-gooey-starter\x64\Debug\gfc.lib and object C:\Users\lucas\Downloads\gfc-gooey-starter\x64\Debug\gfc.exp
+  gfc.vcxproj -> C:\Users\lucas\Downloads\gfc-gooey-starter\x64\Debug\gfc.dll

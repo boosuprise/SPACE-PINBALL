@@ -1,0 +1,52 @@
+﻿  stdafx.cpp
+  GooeyGame.cpp
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(127,42): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(127,42): warning C4244:         with
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(127,42): warning C4244:         [
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(127,42): warning C4244:             T=float
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(127,42): warning C4244:         ]
+  (compiling source file '/GooeyGame.cpp')
+  
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(132,41): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(132,41): warning C4244:         with
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(132,41): warning C4244:         [
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(132,41): warning C4244:             T=float
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(132,41): warning C4244:         ]
+  (compiling source file '/GooeyGame.cpp')
+  
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(132,29): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(132,29): warning C4244:         with
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(132,29): warning C4244:         [
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(132,29): warning C4244:             T=float
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(132,29): warning C4244:         ]
+  (compiling source file '/GooeyGame.cpp')
+  
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(143,68): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(143,68): warning C4305:         with
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(143,68): warning C4305:         [
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(143,68): warning C4305:             T=float
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(143,68): warning C4305:         ]
+  (compiling source file '/GooeyGame.cpp')
+  
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(158,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  (compiling source file '/GooeyGame.cpp')
+  
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(168,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  (compiling source file '/GooeyGame.cpp')
+  
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(178,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  (compiling source file '/GooeyGame.cpp')
+  
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(188,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  (compiling source file '/GooeyGame.cpp')
+  
+C:\Users\lucas\Downloads\gfc-gooey-starter\game\GooeyGame.cpp(329,10): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  (compiling source file '/GooeyGame.cpp')
+  
+  main.cpp
+  Splash.cpp
+  SpriteButton.cpp
+  Generating Code...
+SDLmain.lib(SDL_win32_main.obj) : warning LNK4099: PDB '' was not found with 'SDLmain.lib(SDL_win32_main.obj)' or at ''; linking object as if no debug info
+MSVCRTD.lib(initializers.obj) : warning LNK4098: defaultlib 'msvcrt.lib' conflicts with use of other libs; use /NODEFAULTLIB:library
+  game.vcxproj -> C:\Users\lucas\Downloads\gfc-gooey-starter\x64\Debug\game.exe
