@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 {
 	//app.OpenConsole();
 
-	app.OpenWindow(1280, 720, "Gooey Cannon");
+	app.OpenWindow(600, 900, "Gooey Cannon");
 	//app.OpenFullScreen(1280, 720, 24);
 
 	app.SetClearColor(CColor::White());

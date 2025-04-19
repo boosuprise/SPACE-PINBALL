@@ -25,6 +25,9 @@ protected:
 	CSpriteList theWalls;
 	CSpriteList theGoos;
 	CSplashList theSplashes;
+	CSpriteList thePaddles;
+	CSpriteList collectibles;
+	CSpriteList bumpers;
 
 	// various buttons used in the levels and in the menu
 	vector<CSpriteButton*> theButtons, theButtonsLevel;

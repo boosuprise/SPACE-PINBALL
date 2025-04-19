@@ -5,12 +5,12 @@
 
 CGooeyGame::CGooeyGame(void) :
 	theBackground("back.png"),
-	theMenuBack(1280, 720, 32, 0xff, 0xff00, 0xff0000, 0xff000000),
+	theMenuBack(300, 450, 32, 0xff, 0xff00, 0xff0000, 0xff000000),
 	theMenuScreen("menu.png"),
 	theCongratsScreen("congrats.png"),
-	theMarble(20, 20, "marble.gif", 0),
-	theCannon(80, 56, "cannon.png", 0),
-	theBarrel(110, 70, "barrel.png", 0),
+	theMarble(20, 20, "Player.png", 0),
+	theCannon(580, 56, "cannon.png", 0),
+	theBarrel(610, 70, "barrel.png", 0),
 	thePowerSlider(CRectangle(12, 2, 200, 20), CColor(255,255,255,0), CColor::Black(), 0),
 	thePowerMarker(CRectangle(12, 2, 200, 20), CColor::Blue(), 0)
 {
@@ -103,8 +103,6 @@ void CGooeyGame::OnUpdate()
 	Uint32 dt = GetDeltaTime();	// time since the last frame (in milliseconds)
 	timeFrame = float(dt) / 1000.f;
 	float R = (theMarble.GetWidth() / 2);
-
-
 
 	if (!theMarble.IsDead() && theMarble.GetSpeed() > 0)
 	{
@@ -200,6 +198,15 @@ void CGooeyGame::OnUpdate()
 	// Marble Update Call
 	theMarble.Update(t);
 
+	for (CSprite* paddles : thePaddles)
+	{
+		paddles->Update(t);
+	}
+	for (CSprite* pCollectibles : collectibles)
+		pCollectibles->Update(t);
+	for (CSprite* pBumpers : bumpers)
+		pBumpers->Update(t);
+
 	// Kill very slow moving marbles
 	if (!theMarble.IsDying() && theMarble.GetSpeed() > 0 && theMarble.GetSpeed() < 2)
 		KillMarble();	// kill very slow moving marble
@@ -257,6 +264,14 @@ void CGooeyGame::OnDraw(CGraphics* g)
 	g->Blit(CVector(0, 0), theBackground);
 	for (CSprite *pWall : theWalls)
 		pWall->Draw(g);
+	for (CSprite* paddles : thePaddles)
+	{
+		paddles->Draw(g);
+	}
+	for (CSprite* pCollectibles : collectibles)
+		pCollectibles->Draw(g);
+	for (CSprite* pBumpers : bumpers)
+		pBumpers->Draw(g);
 	for (CSprite *pGoo : theGoos)
 		pGoo->Draw(g);
 	if (IsGameMode())
@@ -315,7 +330,7 @@ void CGooeyGame::OnDraw(CGraphics* g)
 // one time initialisation
 void CGooeyGame::OnInitialize()
 {
-	m_nMaxLevel = 6;
+	m_nMaxLevel = 5;
 		
 	// Prepare menu background: dark grey, semi-transparent
 	Uint32 col = SDL_MapRGBA(theMenuBack.GetSurface()->format, 64, 64, 64, 192);
@@ -398,105 +413,159 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	// destroy the old playfield
 	for (CSprite *pWall : theWalls) delete pWall;
 	theWalls.clear();
+	for (CSprite* paddles : thePaddles) delete paddles;
+	thePaddles.clear();
 	for (CSprite *pGoo : theGoos) delete pGoo;
 	theGoos.clear();
 	for (CSplash *pSplash : theSplashes) delete pSplash;
 	theSplashes.clear();
+	for (CSprite* pCollectibles : collectibles) delete pCollectibles;
+	collectibles.clear();
+	for (CSprite* pBumper : bumpers) delete pBumper;
+	bumpers.clear();
 
 	// create the new playfield, depending on the current level
 	switch (m_nCurLevel)
 	{
 	// Level 1
 	case 1:
-		// The walls
-		theWalls.push_back(new CSprite(CRectangle(300, 200, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(300, 300, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		// The goos
-		theGoos.push_back(new CSprite(CRectangle(300, 220, 40, 40), "goo.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(520, 320, 40, 40), "goo.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(720, 220, 40, 40), "goo.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(860, 320, 40, 40), "goo.png", GetTime()));
-		break;
-
-	// Level 2
-	case 2:
-		// The walls
-		theWalls.push_back(new CSprite(CRectangle(500, 220, 240, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(500, 220, 20, 220), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(840, 0, 20, 720), "wallvert.bmp", CColor::Blue(), GetTime()));
-		// The goos
-		theGoos.push_back(new CSprite(CRectangle(560, 240, 40, 40), "goo.png", GetTime()));
-		break;
-
-	// Level 3
-	case 3:
-		// The walls
-		theWalls.push_back(new CSprite(CRectangle(745, 267, 597, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(-40);
-		theWalls.push_back(new CSprite(CRectangle(290, 170, 160, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(-90);
-		theWalls.push_back(new CSprite(CRectangle(360, 80, 460, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(1139, 580, 260, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(-90);
-		theWalls.push_back(new CSprite(CRectangle(695, 334, 172, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(-126);
-		theWalls.push_back(new CSprite(CRectangle(360, 260, 480, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(345, 329, 405, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 840), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 900), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(560, 890, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(45);
+		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(20);
+		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
-
-		// The goos
-		theGoos.push_back(new CSprite(CRectangle(460, 100, 40, 40), "goo.png", GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 570, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(20);
+		theWalls.push_back(new CSprite(CRectangle(0, 550, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		thePaddles.push_back(new CSprite(CRectangle(330, 35, 60, 36), "Paddle.png", GetTime()));
+		thePaddles.back()->SetPivotFromCenter(0);
+		thePaddles.back()->Rotate(-40);
+		thePaddles.push_back(new CSprite(CRectangle(180, 35, 60, 36), "Paddle.png", GetTime()));
+		thePaddles.back()->SetPivotFromCenter(0);
+		thePaddles.back()->Rotate(220);
+		collectibles.push_back(new CSprite(CRectangle(70, 600, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(50, 250, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(490, 230, 18, 48), "Fuel rod.png", GetTime()));
+		bumpers.push_back(new CSprite(CRectangle(150, 700, 48, 48), "bumper.png", GetTime()));
+		bumpers.push_back(new CSprite(CRectangle(100, 300, 48, 48), "bumper.png", GetTime()));
+		bumpers.push_back(new CSprite(CRectangle(450, 350, 48, 48), "bumper.png", GetTime()));
+		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
 		break;
 
-	// Level 4
+	//Level 2
+	case 2:
+		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 840), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 900), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(560, 890, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(45);
+		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(20);
+		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(-20);
+		thePaddles.push_back(new CSprite(CRectangle(330, 35, 60, 36), "Paddle.png", GetTime()));
+		thePaddles.back()->SetPivotFromCenter(0);
+		thePaddles.back()->Rotate(-40);
+		thePaddles.push_back(new CSprite(CRectangle(180, 35, 60, 36), "Paddle.png", GetTime()));
+		thePaddles.back()->SetPivotFromCenter(0);
+		thePaddles.back()->Rotate(220);
+		collectibles.push_back(new CSprite(CRectangle(500, 750, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(50, 650, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(500, 500, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(50, 150, 18, 48), "Fuel rod.png", GetTime()));
+		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
+		break;
+
+	//Level 3
+	case 3:
+		//walls
+		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 840), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 900), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(560, 890, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(45);
+		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(20);
+		theWalls.push_back(new CSprite(CRectangle(0, 550, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(30);
+		theWalls.push_back(new CSprite(CRectangle(0, 400, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(30);
+		theWalls.push_back(new CSprite(CRectangle(460, 550, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(-30);
+		theWalls.push_back(new CSprite(CRectangle(350, 300, 70, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(-20);
+		theWalls.push_back(new CSprite(CRectangle(410, 300, 70, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(20);
+		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(-20);
+		//paddles
+		thePaddles.push_back(new CSprite(CRectangle(330, 35, 60, 36), "Paddle.png", GetTime()));
+		thePaddles.back()->SetPivotFromCenter(0);
+		thePaddles.back()->Rotate(-40);
+		thePaddles.push_back(new CSprite(CRectangle(180, 35, 60, 36), "Paddle.png", GetTime()));
+		thePaddles.back()->SetPivotFromCenter(0);
+		thePaddles.back()->Rotate(220);
+		//collectibles
+		collectibles.push_back(new CSprite(CRectangle(520, 600, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(30, 450, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(405, 250, 18, 48), "Fuel rod.png", GetTime()));
+		//bumpers
+		bumpers.push_back(new CSprite(CRectangle(30, 150, 48, 48), "bumper.png", GetTime()));
+		bumpers.push_back(new CSprite(CRectangle(500, 750, 48, 48), "bumper.png", GetTime()));
+		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
+		break;
+
+	//Level 4
 	case 4:
-		// The walls
-		theWalls.push_back(new CSprite(CRectangle(899, 40, 540, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(90);
-		theWalls.push_back(new CSprite(CRectangle(310, 150, 280, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(90);
-		theWalls.push_back(new CSprite(CRectangle(440, 300, 480, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(460, 140, 420, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(440, 0, 720, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-
-		// The goos
-		theGoos.push_back(new CSprite(CRectangle(560, 160, 40, 40), "goo.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(780, 160, 40, 40), "goo.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(780, 20, 40, 40), "goo.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(560, 20, 40, 40), "goo.png", GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 840), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 900), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(560, 890, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(45);
+		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(20);
+		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(-20);
+		theWalls.push_back(new CSprite(CRectangle(0, 450, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 300, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(30);
+		theWalls.push_back(new CSprite(CRectangle(450, 300, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		thePaddles.push_back(new CSprite(CRectangle(330, 35, 60, 36), "Paddle.png", GetTime()));
+		thePaddles.back()->SetPivotFromCenter(0);
+		thePaddles.back()->Rotate(-40);
+		thePaddles.push_back(new CSprite(CRectangle(180, 35, 60, 36), "Paddle.png", GetTime()));
+		thePaddles.back()->SetPivotFromCenter(0);
+		thePaddles.back()->Rotate(220);
+		collectibles.push_back(new CSprite(CRectangle(30, 360, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(520, 700, 18, 48), "Fuel rod.png", GetTime()));
+		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
 		break;
-
-	// Level 5:
-	case 5:
-		// The walls
-		theWalls.push_back(new CSprite(CRectangle(580, 0, 300, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(580, 20, 20, 440), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(720, 20, 20, 520), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(860, 20, 20, 440), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(560, 460, 40, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(860, 460, 40, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		// The goos
-		theGoos.push_back(new CSprite(CRectangle(560, 480, 40, 40), "goo.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(860, 480, 40, 40), "goo.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(640, 20, 40, 40), "goo.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(780, 20, 40, 40), "goo.png", GetTime()));
-		break;
-
-	// Level 6
-	case 6:
-		// The walls
-		theWalls.push_back(new CSprite(CRectangle(180, 20, 1100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(640, 40, 20, 300), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(640, 540, 20, 200), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(640, 550, 300, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(625, 250, 172, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(-126);
-		theWalls.push_back(new CSprite(CRectangle(1000, 40, 20, 300), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(1200, 40, 20, 300), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(950, 400, 300, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(-140);
-		// The goos
-		theGoos.push_back(new CSprite(CRectangle(1160, 40, 40, 40), "goo.png", GetTime()));
+	case 5: //second part to level 4
+		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 840), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 900), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(560, 890, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(45);
+		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(20);
+		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(-20);
+		theWalls.push_back(new CSprite(CRectangle(0, 450, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(450, 300, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		thePaddles.push_back(new CSprite(CRectangle(330, 35, 60, 36), "Paddle.png", GetTime()));
+		thePaddles.back()->SetPivotFromCenter(0);
+		thePaddles.back()->Rotate(-40);
+		thePaddles.push_back(new CSprite(CRectangle(180, 35, 60, 36), "Paddle.png", GetTime()));
+		thePaddles.back()->SetPivotFromCenter(0);
+		thePaddles.back()->Rotate(220);
+		collectibles.push_back(new CSprite(CRectangle(150, 250, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(350, 200, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(450, 330, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(320, 400, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(120, 480, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(430, 500, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(130, 700, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(330, 730, 18, 48), "Fuel rod.png", GetTime()));
+		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
 		break;
 	}
 
