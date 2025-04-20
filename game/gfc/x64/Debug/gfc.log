@@ -1,2 +1,14 @@
-﻿     Creating library C:\Users\jonxg\Documents\GitHub\SPACE-PINBALL-tm\x64\Debug\gfc.lib and object C:\Users\jonxg\Documents\GitHub\SPACE-PINBALL-tm\x64\Debug\gfc.exp
-  gfc.vcxproj -> C:\Users\jonxg\Documents\GitHub\SPACE-PINBALL-tm\x64\Debug\gfc.dll
+﻿  pch.cpp
+  dllmain.cpp
+  Game.cpp
+  GameApp.cpp
+  Graphics.cpp
+  SDL_collide.cpp
+  Sound.cpp
+  Sprite.cpp
+  SpriteOval.cpp
+  SpriteRect.cpp
+  SpriteText.cpp
+  Generating Code...
+     Creating library C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\x64\Debug\gfc.lib and object C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\x64\Debug\gfc.exp
+  gfc.vcxproj -> C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\x64\Debug\gfc.dll

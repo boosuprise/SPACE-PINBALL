@@ -117,6 +117,20 @@ void CGooeyGame::OnUpdate()
 		//// TO DO: Test collisions with the walls
 		// Hint: When collision detected, apply reflection. Note that you have the RESTITUTION defined as 0.8 (see line 36)
 		// Also, play sound:  m_player.Play("hit.wav");
+
+		for each(CSprite * bumper in bumpers)
+		{
+			CVector bumperpos = bumper->GetPos();
+			CVector n = theMarble.GetPos() - bumperpos;
+
+			if (n.Length() < 40)
+			{
+				n.Normalise();
+				theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), n) *1.5);
+			}
+
+		}
+
 		for each(CSprite * pWall in theWalls) {
 			X = (pWall->GetWidth() / 2);
 			Y = (pWall->GetHeight() / 2);
@@ -198,7 +212,7 @@ void CGooeyGame::OnUpdate()
 	// Marble Update Call
 	theMarble.Update(t);
 
-	for (CSprite* paddles : thePaddles)
+	for (CSprite* paddles : theFlippers)
 	{
 		paddles->Update(t);
 	}
@@ -272,7 +286,7 @@ void CGooeyGame::OnDraw(CGraphics* g)
 	g->Blit(CVector(0, 0), theBackground);
 	for (CSprite *pWall : theWalls)
 		pWall->Draw(g);
-	for (CSprite* paddles : thePaddles)
+	for (CSprite* paddles : theFlippers)
 	{
 		paddles->Draw(g);
 	}
@@ -429,8 +443,8 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	// destroy the old playfield
 	for (CSprite *pWall : theWalls) delete pWall;
 	theWalls.clear();
-	for (CSprite* paddles : thePaddles) delete paddles;
-	thePaddles.clear();
+	for (CSprite* paddles : theFlippers) delete paddles;
+	theFlippers.clear();
 	for (CSprite *pGoo : theGoos) delete pGoo;
 	theGoos.clear();
 	for (CSplash *pSplash : theSplashes) delete pSplash;
@@ -464,14 +478,14 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.push_back(new CSprite(CRectangle(0, 570, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
 		theWalls.push_back(new CSprite(CRectangle(0, 550, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		thePaddles.push_back(new CSprite(CRectangle(330, 35, 60, 36), "Paddle.png", GetTime()));
-		thePaddles.back()->SetPivotFromCenter(0);
-		thePaddles.back()->Rotate(-40);
-		thePaddles.push_back(new CSprite(CRectangle(180, 35, 60, 36), "Paddle.png", GetTime()));
-		thePaddles.back()->SetPivotFromCenter(0);
-		thePaddles.back()->Rotate(220);
-		collectibles.push_back(new CSprite(CRectangle(70, 600, 18, 48), "Fuel rod.png", GetTime()));
-		collectibles.push_back(new CSprite(CRectangle(50, 250, 18, 48), "Fuel rod.png", GetTime()));
+		theFlippers.push_back(new CSprite(345, 60, "FlipperR.png", GetTime()));
+		theFlippers.back()->SetPivotFromCenter(28.5);
+		theFlippers.back()->Rotate(-40);
+		theFlippers.push_back(new CSprite(215, 60, "FlipperL.png", GetTime()));
+		theFlippers.back()->SetPivotFromCenter(-28.5);
+		theFlippers.back()->Rotate(40);
+		collectibles.push_back(new CSprite(CRectangle(70, 600, 18, 48),  "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(50, 250, 18, 48), "Fuel rod.png", GetTime())); 
 		collectibles.push_back(new CSprite(CRectangle(490, 230, 18, 48), "Fuel rod.png", GetTime()));
 		bumpers.push_back(new CSprite(CRectangle(150, 700, 48, 48), "bumper.png", GetTime()));
 		bumpers.push_back(new CSprite(CRectangle(100, 300, 48, 48), "bumper.png", GetTime()));
@@ -489,20 +503,19 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.back()->Rotate(20);
 		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
-		thePaddles.push_back(new CSprite(CRectangle(330, 35, 60, 36), "Paddle.png", GetTime()));
-		thePaddles.back()->SetPivotFromCenter(0);
-		thePaddles.back()->Rotate(-40);
-		thePaddles.push_back(new CSprite(CRectangle(180, 35, 60, 36), "Paddle.png", GetTime()));
-		thePaddles.back()->SetPivotFromCenter(0);
-		thePaddles.back()->Rotate(220);
+		theFlippers.push_back(new CSprite(345, 60, "FlipperR.png", GetTime()));
+		theFlippers.back()->SetPivotFromCenter(28.5);
+		theFlippers.back()->Rotate(-40);
+		theFlippers.push_back(new CSprite(215, 60, "FlipperL.png", GetTime()));
+		theFlippers.back()->SetPivotFromCenter(-28.5);
+		theFlippers.back()->Rotate(40);
 		collectibles.push_back(new CSprite(CRectangle(500, 750, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(50, 650, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(500, 500, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(50, 150, 18, 48), "Fuel rod.png", GetTime()));
 		//Planet
-		planets.push_back(new CSprite(CRectangle(-80, 450, 200, 200), "halfPlanet.png", GetTime()));
-		planets.push_back(new CSprite(CRectangle(450, 300, 200, 200), "halfPlanet.png", GetTime()));
-		planets.back()->Rotate(180);
+		planets.push_back(new CSprite(CRectangle(20, 450, 100, 200), "PlanetL.png", GetTime()));
+		planets.push_back(new CSprite(CRectangle(450, 300, 100, 200), "PlanetR.png", GetTime()));
 		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
 		break;
 
@@ -527,13 +540,13 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.back()->Rotate(20);
 		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
-		//paddles
-		thePaddles.push_back(new CSprite(CRectangle(330, 35, 60, 36), "Paddle.png", GetTime()));
-		thePaddles.back()->SetPivotFromCenter(0);
-		thePaddles.back()->Rotate(-40);
-		thePaddles.push_back(new CSprite(CRectangle(180, 35, 60, 36), "Paddle.png", GetTime()));
-		thePaddles.back()->SetPivotFromCenter(0);
-		thePaddles.back()->Rotate(220);
+		//Flippers
+		theFlippers.push_back(new CSprite(345, 60, "FlipperR.png", GetTime()));
+		theFlippers.back()->SetPivotFromCenter(28.5);
+		theFlippers.back()->Rotate(-40);
+		theFlippers.push_back(new CSprite(215, 60, "FlipperL.png", GetTime()));
+		theFlippers.back()->SetPivotFromCenter(-28.5);
+		theFlippers.back()->Rotate(40);
 		//collectibles
 		collectibles.push_back(new CSprite(CRectangle(520, 600, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(30, 450, 18, 48), "Fuel rod.png", GetTime()));
@@ -561,17 +574,17 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.push_back(new CSprite(CRectangle(0, 300, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(30);
 		theWalls.push_back(new CSprite(CRectangle(450, 300, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		thePaddles.push_back(new CSprite(CRectangle(330, 35, 60, 36), "Paddle.png", GetTime()));
-		thePaddles.back()->SetPivotFromCenter(0);
-		thePaddles.back()->Rotate(-40);
-		thePaddles.push_back(new CSprite(CRectangle(180, 35, 60, 36), "Paddle.png", GetTime()));
-		thePaddles.back()->SetPivotFromCenter(0);
-		thePaddles.back()->Rotate(220);
 		collectibles.push_back(new CSprite(CRectangle(30, 360, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(520, 700, 18, 48), "Fuel rod.png", GetTime()));
+		//Flippers
+		theFlippers.push_back(new CSprite(345, 60, "FlipperR.png", GetTime()));
+		theFlippers.back()->SetPivotFromCenter(28.5);
+		theFlippers.back()->Rotate(-40);
+		theFlippers.push_back(new CSprite(215, 60, "FlipperL.png", GetTime()));
+		theFlippers.back()->SetPivotFromCenter(-28.5);
+		theFlippers.back()->Rotate(40);
 		//Planet
-		planets.push_back(new CSprite(CRectangle(450, 500, 200, 200), "halfPlanet.png", GetTime()));
-		planets.back()->Rotate(180);
+		planets.push_back(new CSprite(CRectangle(450, 500, 100, 200), "PlanetR.png", GetTime()));
 		//Portal
 		bluePortal.push_back(new CSprite(CRectangle(20, 470, 64, 64), "Portal_blue.png", GetTime()));
 		orangePortal.push_back(new CSprite(CRectangle(480, 320, 64, 64), "Portal_red.png", GetTime()));
@@ -588,12 +601,6 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.back()->Rotate(-20);
 		theWalls.push_back(new CSprite(CRectangle(0, 450, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(450, 300, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		thePaddles.push_back(new CSprite(CRectangle(330, 35, 60, 36), "Paddle.png", GetTime()));
-		thePaddles.back()->SetPivotFromCenter(0);
-		thePaddles.back()->Rotate(-40);
-		thePaddles.push_back(new CSprite(CRectangle(180, 35, 60, 36), "Paddle.png", GetTime()));
-		thePaddles.back()->SetPivotFromCenter(0);
-		thePaddles.back()->Rotate(220);
 		collectibles.push_back(new CSprite(CRectangle(150, 250, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(350, 200, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(450, 330, 18, 48), "Fuel rod.png", GetTime()));
@@ -604,6 +611,13 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		collectibles.push_back(new CSprite(CRectangle(330, 730, 18, 48), "Fuel rod.png", GetTime()));
 		blackHoles.push_back(new CSprite(CRectangle(30, 750, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
 		blackHoles.push_back(new CSprite(CRectangle(480, 750, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
+		//Flippers
+		theFlippers.push_back(new CSprite(345, 60, "FlipperR.png", GetTime()));
+		theFlippers.back()->SetPivotFromCenter(28.5);
+		theFlippers.back()->Rotate(-40);
+		theFlippers.push_back(new CSprite(215, 60, "FlipperL.png", GetTime()));
+		theFlippers.back()->SetPivotFromCenter(-28.5);
+		theFlippers.back()->Rotate(40);
 		//portals
 		bluePortal.push_back(new CSprite(CRectangle(20, 470, 64, 64), "Portal_blue.png", GetTime()));
 		orangePortal.push_back(new CSprite(CRectangle(480, 320, 64, 64), "Portal_red.png", GetTime()));

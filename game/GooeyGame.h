@@ -25,7 +25,7 @@ protected:
 	CSpriteList theWalls;
 	CSpriteList theGoos;
 	CSplashList theSplashes;
-	CSpriteList thePaddles;
+	CSpriteList theFlippers;
 	CSpriteList collectibles;
 	CSpriteList bumpers;
 	CSpriteList blackHoles;
