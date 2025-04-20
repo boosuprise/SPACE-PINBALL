@@ -206,6 +206,14 @@ void CGooeyGame::OnUpdate()
 		pCollectibles->Update(t);
 	for (CSprite* pBumpers : bumpers)
 		pBumpers->Update(t);
+	for (CSprite* pBlackHoles : blackHoles)
+		pBlackHoles->Update(t);
+	for (CSprite* pPlanet : planets)
+		pPlanet->Update(t);
+	for (CSprite* pBluePortal : bluePortal)
+		pBluePortal->Update(t);
+	for (CSprite* pOrangePortal : orangePortal)
+		pOrangePortal->Update(t);
 
 	// Kill very slow moving marbles
 	if (!theMarble.IsDying() && theMarble.GetSpeed() > 0 && theMarble.GetSpeed() < 2)
@@ -274,6 +282,14 @@ void CGooeyGame::OnDraw(CGraphics* g)
 		pBumpers->Draw(g);
 	for (CSprite *pGoo : theGoos)
 		pGoo->Draw(g);
+	for (CSprite* pBlackHole : blackHoles)
+		pBlackHole->Draw(g);
+	for (CSprite* pPlanet : planets)
+		pPlanet->Draw(g);
+	for (CSprite* pBluePortal : bluePortal)
+		pBluePortal->Draw(g);
+	for (CSprite* pOrangePortal : orangePortal)
+		pOrangePortal->Draw(g);
 	if (IsGameMode())
 	{
 		theButtons[1]->Enable(!theMarble.IsDying() && theMarble.GetSpeed() != 0);
@@ -423,6 +439,14 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	collectibles.clear();
 	for (CSprite* pBumper : bumpers) delete pBumper;
 	bumpers.clear();
+	for (CSprite* pBlackHole : blackHoles) delete pBlackHole;
+	blackHoles.clear();
+	for (CSprite* pPlanet : planets) delete pPlanet;
+	planets.clear();
+	for (CSprite* pBluePortal : bluePortal) delete pBluePortal;
+	bluePortal.clear();
+	for (CSprite* pOrangePortal : orangePortal) delete pOrangePortal;
+	orangePortal.clear();
 
 	// create the new playfield, depending on the current level
 	switch (m_nCurLevel)
@@ -475,6 +499,10 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		collectibles.push_back(new CSprite(CRectangle(50, 650, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(500, 500, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(50, 150, 18, 48), "Fuel rod.png", GetTime()));
+		//Planet
+		planets.push_back(new CSprite(CRectangle(-80, 450, 200, 200), "halfPlanet.png", GetTime()));
+		planets.push_back(new CSprite(CRectangle(450, 300, 200, 200), "halfPlanet.png", GetTime()));
+		planets.back()->Rotate(180);
 		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
 		break;
 
@@ -513,7 +541,10 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		//bumpers
 		bumpers.push_back(new CSprite(CRectangle(30, 150, 48, 48), "bumper.png", GetTime()));
 		bumpers.push_back(new CSprite(CRectangle(500, 750, 48, 48), "bumper.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
+		//Black hole
+		blackHoles.push_back(new CSprite(CRectangle(30, 580, 24*3, 24*3), "Bhole.png", GetTime()));
+		blackHoles.push_back(new CSprite(CRectangle(480, 300, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
+		theGoos.push_back(new CSprite(CRectangle(270, 240, 40, 40), "goo.png", GetTime()));
 		break;
 
 	//Level 4
@@ -538,6 +569,12 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		thePaddles.back()->Rotate(220);
 		collectibles.push_back(new CSprite(CRectangle(30, 360, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(520, 700, 18, 48), "Fuel rod.png", GetTime()));
+		//Planet
+		planets.push_back(new CSprite(CRectangle(450, 500, 200, 200), "halfPlanet.png", GetTime()));
+		planets.back()->Rotate(180);
+		//Portal
+		bluePortal.push_back(new CSprite(CRectangle(20, 470, 64, 64), "Portal_blue.png", GetTime()));
+		orangePortal.push_back(new CSprite(CRectangle(480, 320, 64, 64), "Portal_red.png", GetTime()));
 		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
 		break;
 	case 5: //second part to level 4
@@ -565,6 +602,11 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		collectibles.push_back(new CSprite(CRectangle(430, 500, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(130, 700, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(330, 730, 18, 48), "Fuel rod.png", GetTime()));
+		blackHoles.push_back(new CSprite(CRectangle(30, 750, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
+		blackHoles.push_back(new CSprite(CRectangle(480, 750, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
+		//portals
+		bluePortal.push_back(new CSprite(CRectangle(20, 470, 64, 64), "Portal_blue.png", GetTime()));
+		orangePortal.push_back(new CSprite(CRectangle(480, 320, 64, 64), "Portal_red.png", GetTime()));
 		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
 		break;
 	}

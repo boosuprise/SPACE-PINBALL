@@ -28,6 +28,10 @@ protected:
 	CSpriteList thePaddles;
 	CSpriteList collectibles;
 	CSpriteList bumpers;
+	CSpriteList blackHoles;
+	CSpriteList planets;
+	CSpriteList bluePortal;
+	CSpriteList orangePortal;
 
 	// various buttons used in the levels and in the menu
 	vector<CSpriteButton*> theButtons, theButtonsLevel;
