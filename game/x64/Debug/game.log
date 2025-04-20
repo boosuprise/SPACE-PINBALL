@@ -1,45 +1,45 @@
 ﻿  GooeyGame.cpp
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(139,42): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(139,42): warning C4244:         with
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(139,42): warning C4244:         [
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(139,42): warning C4244:             T=float
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(139,42): warning C4244:         ]
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(186,42): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(186,42): warning C4244:         with
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(186,42): warning C4244:         [
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(186,42): warning C4244:             T=float
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(186,42): warning C4244:         ]
   (compiling source file '/GooeyGame.cpp')
   
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(144,41): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(144,41): warning C4244:         with
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(144,41): warning C4244:         [
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(144,41): warning C4244:             T=float
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(144,41): warning C4244:         ]
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(191,41): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(191,41): warning C4244:         with
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(191,41): warning C4244:         [
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(191,41): warning C4244:             T=float
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(191,41): warning C4244:         ]
   (compiling source file '/GooeyGame.cpp')
   
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(144,29): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(144,29): warning C4244:         with
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(144,29): warning C4244:         [
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(144,29): warning C4244:             T=float
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(144,29): warning C4244:         ]
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(191,29): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(191,29): warning C4244:         with
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(191,29): warning C4244:         [
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(191,29): warning C4244:             T=float
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(191,29): warning C4244:         ]
   (compiling source file '/GooeyGame.cpp')
   
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(155,68): warning C4305: 'argument': truncation from 'double' to 'T'
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(155,68): warning C4305:         with
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(155,68): warning C4305:         [
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(155,68): warning C4305:             T=float
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(155,68): warning C4305:         ]
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(202,68): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(202,68): warning C4305:         with
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(202,68): warning C4305:         [
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(202,68): warning C4305:             T=float
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(202,68): warning C4305:         ]
   (compiling source file '/GooeyGame.cpp')
   
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(170,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(217,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   (compiling source file '/GooeyGame.cpp')
   
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(180,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(227,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   (compiling source file '/GooeyGame.cpp')
   
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(190,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(237,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   (compiling source file '/GooeyGame.cpp')
   
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(200,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(247,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   (compiling source file '/GooeyGame.cpp')
   
-C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(374,10): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\game\GooeyGame.cpp(435,10): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
   (compiling source file '/GooeyGame.cpp')
   
   game.vcxproj -> C:\Users\Hiba\Documents\GitHub\SPACE-PINBALL-tm\x64\Debug\game.exe

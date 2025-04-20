@@ -14,6 +14,14 @@ protected:
 	double f2;
 	double alpha;
 	double a;
+	int pts;
+
+	float gravstr;
+	float grav;
+
+	bool launched;
+	CSpriteRect launchtrigger;
+
 	// The Images: the backgrounds and various screens
 	CGraphics theBackground, theMenuBack, theMenuScreen, theCongratsScreen;
 

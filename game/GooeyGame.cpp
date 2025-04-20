@@ -12,7 +12,9 @@ CGooeyGame::CGooeyGame(void) :
 	theCannon(580, 56, "cannon.png", 0),
 	theBarrel(610, 70, "barrel.png", 0),
 	thePowerSlider(CRectangle(12, 2, 200, 20), CColor(255,255,255,0), CColor::Black(), 0),
-	thePowerMarker(CRectangle(12, 2, 200, 20), CColor::Blue(), 0)
+	thePowerMarker(CRectangle(12, 2, 200, 20), CColor::Blue(), 0),
+	launchtrigger(CRectangle(560, 845, 5, 50), CColor::Red(), 0)
+
 {
 	m_pButtonPressed = NULL;
 	m_bAimTime = 0;
@@ -22,6 +24,7 @@ CGooeyGame::CGooeyGame(void) :
 	m_nMaxLevel = 0;
 	m_nUnlockedLevel = 1;
 	m_bLevelCompleted = true;
+	gravstr = 5.0;
 }
 
 CGooeyGame::~CGooeyGame(void)
@@ -58,6 +61,8 @@ void CGooeyGame::KillMarble()
 	theSplashes.push_back(new CSplash(theMarble.GetPosition(), CColor(80, 90, 110), 1.0, 80, 100, GetTime()));
 	theMarble.Die(0);
 	m_player.Play("marble.wav"); m_player.Volume(1.f);
+	launched = false;
+	theWalls.back()->SetPos(560, 990);
 }
 
 // Starts the aiming mode
@@ -104,6 +109,8 @@ void CGooeyGame::OnUpdate()
 	timeFrame = float(dt) / 1000.f;
 	float R = (theMarble.GetWidth() / 2);
 
+	launchtrigger.Update(t);
+
 	if (!theMarble.IsDead() && theMarble.GetSpeed() > 0)
 	{
 		// Apply accelerations
@@ -118,6 +125,34 @@ void CGooeyGame::OnUpdate()
 		// Hint: When collision detected, apply reflection. Note that you have the RESTITUTION defined as 0.8 (see line 36)
 		// Also, play sound:  m_player.Play("hit.wav");
 
+
+		//planets and blackholes
+		if (launched == true)
+		{
+			for each(CSprite * planet in planets)
+			{
+				CVector planetpos = planet->GetPos();
+				CVector n = theMarble.GetPos() - planetpos;
+				CVector grv = n;
+
+				if (n.Length() < 100)
+				{
+					n.Normalise();
+					theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), n) * 1.5);
+				}
+			}
+
+
+
+		}
+		
+		if (theMarble.HitTest(&launchtrigger))
+		{
+			launched = true;
+			theWalls.back()->SetPos(560, 840);
+		}
+
+		//bumpers
 		for each(CSprite * bumper in bumpers)
 		{
 			CVector bumperpos = bumper->GetPos();
@@ -128,9 +163,21 @@ void CGooeyGame::OnUpdate()
 				n.Normalise();
 				theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), n) *1.5);
 			}
-
 		}
 
+		// Black holes
+		for each(CSprite * hole in blackHoles)
+		{
+			CVector holepos = hole->GetPos();
+			CVector n = theMarble.GetPos() - holepos;
+
+			if (n.Length() < 35)
+			{
+				KillMarble();
+			}
+		}
+
+		//wall collision
 		for each(CSprite * pWall in theWalls) {
 			X = (pWall->GetWidth() / 2);
 			Y = (pWall->GetHeight() / 2);
@@ -229,6 +276,7 @@ void CGooeyGame::OnUpdate()
 	for (CSprite* pOrangePortal : orangePortal)
 		pOrangePortal->Update(t);
 
+
 	// Kill very slow moving marbles
 	if (!theMarble.IsDying() && theMarble.GetSpeed() > 0 && theMarble.GetSpeed() < 2)
 		KillMarble();	// kill very slow moving marble
@@ -242,6 +290,17 @@ void CGooeyGame::OnUpdate()
 	for (CSprite *pGoo : theGoos)
 		if (theMarble.HitTest(pGoo))
 			pGooHit = pGoo;
+
+	// point get
+	for (CSprite* point : collectibles)
+	{
+		if (theMarble.HitTest(point))
+		{
+			point->Delete();
+			pts++;
+		}
+	}
+	collectibles.delete_if(deleted);
 
 	// When just hit a Goo - slow down and die in 2 seconds
 	if (pGooHit && !theMarble.IsDying())
@@ -317,6 +376,8 @@ void CGooeyGame::OnDraw(CGraphics* g)
 	theMarble.Draw(g);
 	theBarrel.Draw(g);
 	theCannon.Draw(g);
+
+	launchtrigger.Draw(g);
 
 	// Draw Power Meter
 	float x = (GetShotPower() - MIN_POWER) * thePowerSlider.GetWidth() / (MAX_POWER - MIN_POWER);
@@ -467,6 +528,7 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	{
 	// Level 1
 	case 1:
+		theWalls.push_back(new CSprite(CRectangle(0, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 840), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 900), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(560, 890, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
@@ -495,6 +557,7 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 
 	//Level 2
 	case 2:
+		theWalls.push_back(new CSprite(CRectangle(0, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 840), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 900), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(560, 890, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
@@ -522,6 +585,7 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	//Level 3
 	case 3:
 		//walls
+		theWalls.push_back(new CSprite(CRectangle(0, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 840), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 900), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(560, 890, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
@@ -562,6 +626,7 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 
 	//Level 4
 	case 4:
+		theWalls.push_back(new CSprite(CRectangle(0, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 840), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 900), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(560, 890, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
@@ -591,6 +656,7 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
 		break;
 	case 5: //second part to level 4
+		theWalls.push_back(new CSprite(CRectangle(0, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 840), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 900), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(560, 890, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
@@ -624,6 +690,10 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
 		break;
 	}
+
+	// kinda important dont delete LUCAS
+	theWalls.push_back(new CSprite(CRectangle(550, 990, 20, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
+	// xoxo love u
 
 	m_bLevelCompleted = false;
 }
