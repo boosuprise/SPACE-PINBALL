@@ -302,26 +302,7 @@ void CGooeyGame::OnUpdate()
 	}
 	collectibles.delete_if(deleted);
 
-	// When just hit a Goo - slow down and die in 2 seconds
-	if (pGooHit && !theMarble.IsDying())
-	{
-		theMarble.SetSpeed(min(200, theMarble.GetSpeed()));
-		theMarble.Die(2000);	// just hit
-	}
-	// else, if dying but not touching a Goo any more - un-die, and the goo will also survive
-	else if (theMarble.IsDying() && theMarble.GetTimeToDie() > 100 && !pGooHit)
-		theMarble.UnDie();
-	// else, if stuck inside the goo, delete the goo and kill the marble
-	else if (pGooHit && theMarble.IsDying() && theMarble.GetSpeed() < 2)
-	{
-		// Killing a Goo!
-		pGooHit->Delete();
-		theMarble.Die(0);
-		theSplashes.push_back(new CSplash(theMarble.GetPosition(), CColor(98, 222, 0), 2.0, 60, 90, GetTime()));
-		m_player.Play("goo.wav"); m_player.Volume(1.f);
-	}
-	theGoos.remove_if(deleted);
-	
+
 	// Update the Splashes (if needed)
 	for (CSplash *pSplash : theSplashes)
 		pSplash->Update(t);
@@ -331,8 +312,8 @@ void CGooeyGame::OnUpdate()
 	if (theMarble.IsDead() && theSplashes.size() == 0)
 		SpawnMarble();
 
-	// Success Test - if no more goos and no more splashes, then the level is complete!
-	if (theGoos.size() == 0 && theSplashes.size() == 0)
+	// Success Test - if no more nuclear fuel rods and no more splashes, then the level is complete!
+	if (collectibles.size() == 0 && theSplashes.size() == 0)
 	{
 		m_bLevelCompleted = true;
 		NewGame();
@@ -552,7 +533,6 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		bumpers.push_back(new CSprite(CRectangle(150, 700, 48, 48), "bumper.png", GetTime()));
 		bumpers.push_back(new CSprite(CRectangle(100, 300, 48, 48), "bumper.png", GetTime()));
 		bumpers.push_back(new CSprite(CRectangle(450, 350, 48, 48), "bumper.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
 		break;
 
 	//Level 2
@@ -579,7 +559,6 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		//Planet
 		planets.push_back(new CSprite(CRectangle(20, 450, 100, 200), "PlanetL.png", GetTime()));
 		planets.push_back(new CSprite(CRectangle(450, 300, 100, 200), "PlanetR.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
 		break;
 
 	//Level 3
@@ -621,7 +600,6 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		//Black hole
 		blackHoles.push_back(new CSprite(CRectangle(30, 580, 24*3, 24*3), "Bhole.png", GetTime()));
 		blackHoles.push_back(new CSprite(CRectangle(480, 300, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(270, 240, 40, 40), "goo.png", GetTime()));
 		break;
 
 	//Level 4
@@ -653,7 +631,6 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		//Portal
 		bluePortal.push_back(new CSprite(CRectangle(20, 470, 64, 64), "Portal_blue.png", GetTime()));
 		orangePortal.push_back(new CSprite(CRectangle(480, 320, 64, 64), "Portal_red.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
 		break;
 	case 5: //second part to level 4
 		theWalls.push_back(new CSprite(CRectangle(0, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
@@ -687,7 +664,6 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		//portals
 		bluePortal.push_back(new CSprite(CRectangle(20, 470, 64, 64), "Portal_blue.png", GetTime()));
 		orangePortal.push_back(new CSprite(CRectangle(480, 320, 64, 64), "Portal_red.png", GetTime()));
-		theGoos.push_back(new CSprite(CRectangle(300, 240, 40, 40), "goo.png", GetTime()));
 		break;
 	}
 
