@@ -15,6 +15,8 @@ protected:
 	double alpha;
 	double a;
 	int pts;
+	bool hitwall;
+	bool flagTrue;
 
 	float gravstr;
 	float grav;
@@ -26,7 +28,7 @@ protected:
 	CGraphics theBackground, theMenuBack, theMenuScreen, theCongratsScreen;
 
 	// Sprites:
-	CSprite theMarble, theCannon, theBarrel;
+	CSprite theMarble, theCannon, theBarrel, theLPaddle,theRPaddle;
 	CSpriteRect thePowerSlider, thePowerMarker;
 
 	// Sprites collections. Splashes are displayed after the marble gets destroyed.
@@ -74,6 +76,7 @@ public:
 	bool IsAiming();
 	float GetShotPower();
 	float Shoot();
+	void PaddleControl();
 
 	CSpriteButton *FindButton(Sint16 buttonId);
 

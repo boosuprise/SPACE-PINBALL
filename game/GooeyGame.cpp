@@ -9,8 +9,10 @@ CGooeyGame::CGooeyGame(void) :
 	theMenuScreen("menu.png"),
 	theCongratsScreen("congrats.png"),
 	theMarble(20, 20, "Player.png", 0),
-	theCannon(580, 56, "cannon.png", 0),
-	theBarrel(610, 70, "barrel.png", 0),
+	//theCannon(580, 56, "cannon.png", 0),
+	//theLPaddle(215, 60, "FlipperL.png", 0),
+	//theRPaddle(345, 60, "FlipperR.png", 0),
+	theBarrel(620, 70, "barrel.png", 0),
 	thePowerSlider(CRectangle(12, 2, 200, 20), CColor(255,255,255,0), CColor::Black(), 0),
 	thePowerMarker(CRectangle(12, 2, 200, 20), CColor::Blue(), 0),
 	launchtrigger(CRectangle(560, 845, 5, 50), CColor::Red(), 0)
@@ -19,6 +21,10 @@ CGooeyGame::CGooeyGame(void) :
 	m_pButtonPressed = NULL;
 	m_bAimTime = 0;
 	theBarrel.SetPivotFromCenter(-40, 0);
+	theLPaddle.SetPivotFromCenter(-28.5, 0);
+	theRPaddle.SetPivotFromCenter(28.5, 0);
+	theLPaddle.SetRotation(40);
+	theRPaddle.SetRotation(-40);
 
 	m_nCurLevel = 0;
 	m_nMaxLevel = 0;
@@ -97,6 +103,36 @@ float CGooeyGame::Shoot()
 	return f;
 }
 
+void CGooeyGame::PaddleControl()
+{
+	for (CSprite* paddles : theFlippers)
+	{
+		if (IsKeyDown(SDLK_a) && theFlippers.back()->GetRotation() > -40)
+		{
+			theFlippers.back()->Rotate(-4);
+
+
+
+		}
+		if (IsKeyDown(SDLK_d) && theFlippers.front()->GetRotation() < 40)
+		{
+			theFlippers.front()->Rotate(4);
+
+		}
+		
+		if (!IsKeyDown(SDLK_a) && theFlippers.back()->GetRotation() < 40)
+		{
+				theFlippers.back()->Rotate(4);
+		}
+		if (!IsKeyDown(SDLK_d) && theFlippers.front()->GetRotation() > -40)
+		{
+				theFlippers.front()->Rotate(-4);
+
+		}
+		
+	}
+}
+
 /////////////////////////////////////////////////////
 // Per-Frame Callback Funtions (must be implemented!)
 
@@ -110,7 +146,8 @@ void CGooeyGame::OnUpdate()
 	float R = (theMarble.GetWidth() / 2);
 
 	launchtrigger.Update(t);
-
+	PaddleControl();
+	
 	if (!theMarble.IsDead() && theMarble.GetSpeed() > 0)
 	{
 		// Apply accelerations
@@ -161,7 +198,7 @@ void CGooeyGame::OnUpdate()
 			if (n.Length() < 40)
 			{
 				n.Normalise();
-				theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), n) *1.5);
+				theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), n) *1.1);
 			}
 		}
 
@@ -174,6 +211,82 @@ void CGooeyGame::OnUpdate()
 			if (n.Length() < 35)
 			{
 				KillMarble();
+			}
+		}
+		// paddles
+		for each(CSprite * paddles in theFlippers) {
+			X = (paddles->GetWidth() / 2);
+			Y = (paddles->GetHeight() / 2);
+			a = paddles->GetRotation();
+			alpha = DEG2RAD(a);
+			CVector v = theMarble.GetVelocity() * timeFrame;
+			CVector t = paddles->GetPos() - theMarble.GetPos();
+			if (paddles->GetRotation() != 0 && paddles->GetRotation() != 180) {
+				for (int i = 0; i <= 180; i += 180) {
+					alpha = DEG2RAD(a + i);
+					CVector n = CVector(sin(alpha), cos(alpha));
+					if (Dot(v, n) < 0) {
+						float vy = Dot(v, n);
+						CVector d = t + (Y + R) * n;
+						float dy = Dot(d, n);
+						float f1 = dy / vy;
+
+						float vx = Cross(v, n);
+						float tx = Cross(t, n);
+						float f2 = (tx - vx * f1) / (X + R);
+						if (f1 >= 0 && f1 <= 1 && f2 > -1 && f2 <= 1) {
+							theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), n));
+							theMarble.SetYVelocity(theMarble.GetYVelocity() * 0.5);
+							m_player.Play("hit.wav");
+						}
+					}
+				}
+			}
+			else
+			{
+
+
+				if (v.m_y < 0) {
+					f1 = (t.m_y + Y + R) / v.m_y;
+					f2 = (t.m_x - v.m_x * f1) / (X + R);
+					if (f1 >= 0 && f1 <= 1 && f2 > -1 && f2 <= 1) {
+						theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), CVector(0, 1)));
+						theMarble.SetYVelocity(theMarble.GetYVelocity() * 0.5);
+						m_player.Play("hit.wav");
+					}
+				}
+
+				if (v.m_y > 0) {
+					f1 = (t.m_y - Y - R) / v.m_y;
+					f2 = (t.m_x + v.m_x * f1) / (X + R);
+					if (f1 >= 0 && f1 <= 1 && f2 > -1 && f2 <= 1) {
+						theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), CVector(0, 1)));
+						theMarble.SetYVelocity(theMarble.GetYVelocity() * 0.5);
+						m_player.Play("hit.wav");
+					}
+				}
+
+				if (v.m_x < 0) {
+					f1 = (t.m_x + X + R) / v.m_x;
+					f2 = (t.m_y - v.m_y * f1) / (Y + R);
+					if (f1 >= 0 && f1 <= 1 && f2 > -1 && f2 <= 1) {
+						theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), CVector(1, 0)));
+						theMarble.SetXVelocity(theMarble.GetXVelocity() * 0.5);
+						m_player.Play("hit.wav");
+					}
+				}
+
+				if (v.m_x > 0) {
+					f1 = (t.m_x - X - R) / v.m_x;
+					f2 = (t.m_y + v.m_y * f1) / (Y + R);
+					if (f1 >= 0 && f1 <= 1 && f2 > -1 && f2 <= 1) {
+						theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), CVector(1, 0)));
+						theMarble.SetXVelocity(theMarble.GetXVelocity() * 0.5);
+						m_player.Play("hit.wav");
+					}
+
+				}
+
 			}
 		}
 
@@ -199,8 +312,11 @@ void CGooeyGame::OnUpdate()
 						float tx = Cross(t, n);
 						float f2 = (tx - vx * f1) / (X + R);
 						if (f1 >= 0 && f1 <= 1 && f2 > -1 && f2 <= 1) {
-							theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), n) * 0.8);
-							m_player.Play("hit.wav");
+							theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), n)*0.8);
+							if (!theMarble.IsDying() && theMarble.GetSpeed() > 30 )
+							{
+								m_player.Play("hit.wav");
+							}
 						}
 					}
 				}
@@ -214,8 +330,11 @@ void CGooeyGame::OnUpdate()
 					f2 = (t.m_x - v.m_x * f1) / (X + R);
 					if (f1 >= 0 && f1 <= 1 && f2 > -1 && f2 <= 1) {
 						theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), CVector(0, 1)));
-						theMarble.SetYVelocity(theMarble.GetYVelocity() * 0.8);
-						m_player.Play("hit.wav");
+						theMarble.SetYVelocity(theMarble.GetYVelocity() * 0.5);
+						if (!theMarble.IsDying() && theMarble.GetSpeed() > 30)
+						{
+							m_player.Play("hit.wav");
+						}
 					}
 				}
 
@@ -224,8 +343,11 @@ void CGooeyGame::OnUpdate()
 					f2 = (t.m_x + v.m_x * f1) / (X + R);
 					if (f1 >= 0 && f1 <= 1 && f2 > -1 && f2 <= 1) {
 						theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), CVector(0, 1)));
-						theMarble.SetYVelocity(theMarble.GetYVelocity() * 0.8);
-						m_player.Play("hit.wav");
+						theMarble.SetYVelocity(theMarble.GetYVelocity() * 0.5);
+						if (!theMarble.IsDying() && theMarble.GetSpeed() > 30)
+						{
+							m_player.Play("hit.wav");
+						}
 					}
 				}
 
@@ -234,8 +356,11 @@ void CGooeyGame::OnUpdate()
 					f2 = (t.m_y - v.m_y * f1) / (Y + R);
 					if (f1 >= 0 && f1 <= 1 && f2 > -1 && f2 <= 1) {
 						theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), CVector(1, 0)));
-						theMarble.SetXVelocity(theMarble.GetXVelocity() * 0.8);
-						m_player.Play("hit.wav");
+						theMarble.SetXVelocity(theMarble.GetXVelocity() * 0.5);
+						if (!theMarble.IsDying() && theMarble.GetSpeed() > 30)
+						{
+							m_player.Play("hit.wav");
+						}
 					}
 				}
 
@@ -244,8 +369,11 @@ void CGooeyGame::OnUpdate()
 					f2 = (t.m_y + v.m_y * f1) / (Y + R);
 					if (f1 >= 0 && f1 <= 1 && f2 > -1 && f2 <= 1) {
 						theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), CVector(1, 0)));
-						theMarble.SetXVelocity(theMarble.GetXVelocity() * 0.8);
-						m_player.Play("hit.wav");
+						theMarble.SetXVelocity(theMarble.GetXVelocity() * 0.5);
+						if (!theMarble.IsDying() && theMarble.GetSpeed() > 30)
+						{
+							m_player.Play("hit.wav");
+						}
 					}
 
 				}
@@ -278,7 +406,7 @@ void CGooeyGame::OnUpdate()
 
 
 	// Kill very slow moving marbles
-	if (!theMarble.IsDying() && theMarble.GetSpeed() > 0 && theMarble.GetSpeed() < 2)
+	if (!theMarble.IsDying() && theMarble.GetSpeed() > 0 && theMarble.GetSpeed() < 0.1)
 		KillMarble();	// kill very slow moving marble
 
 	// Kill the marble if lost of sight
@@ -357,6 +485,8 @@ void CGooeyGame::OnDraw(CGraphics* g)
 	theMarble.Draw(g);
 	theBarrel.Draw(g);
 	theCannon.Draw(g);
+	//theLPaddle.Draw(g);
+	//theRPaddle.Draw(g);
 
 	launchtrigger.Draw(g);
 
@@ -373,7 +503,7 @@ void CGooeyGame::OnDraw(CGraphics* g)
 	}
 
 	if (IsGameMode())
-		*g << bottom << right << "LEVEL " << m_nCurLevel;
+		*g << bottom << right << "LEVEL " << theMarble.GetSpeed();
 	
 	// Draw Menu Items
 	if (IsMenuMode())
@@ -511,6 +641,7 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	case 1:
 		theWalls.push_back(new CSprite(CRectangle(0, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 840), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(600, 0, 20, 840), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 900), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(560, 890, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(45);
@@ -656,15 +787,19 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		blackHoles.push_back(new CSprite(CRectangle(480, 750, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
 		//Flippers
 		theFlippers.push_back(new CSprite(345, 60, "FlipperR.png", GetTime()));
-		theFlippers.back()->SetPivotFromCenter(28.5);
-		theFlippers.back()->Rotate(-40);
 		theFlippers.push_back(new CSprite(215, 60, "FlipperL.png", GetTime()));
-		theFlippers.back()->SetPivotFromCenter(-28.5);
-		theFlippers.back()->Rotate(40);
+		
 		//portals
 		bluePortal.push_back(new CSprite(CRectangle(20, 470, 64, 64), "Portal_blue.png", GetTime()));
 		orangePortal.push_back(new CSprite(CRectangle(480, 320, 64, 64), "Portal_red.png", GetTime()));
 		break;
+	case 6:
+		
+		theWalls.push_back(new CSprite(CRectangle(0, 90, 500, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(20);
+		theWalls.push_back(new CSprite(CRectangle(370, 90, 500, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(-20);
+		collectibles.push_back(new CSprite(CRectangle(150, 250, 18, 48), "Fuel rod.png", GetTime()));
 	}
 
 	// kinda important dont delete LUCAS
@@ -693,10 +828,13 @@ void CGooeyGame::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode)
 		StopGame();
 	if (sym == SDLK_SPACE)
 		PauseGame();
+	
+	
 }
 
 void CGooeyGame::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode)
 {
+	
 }
 
 
