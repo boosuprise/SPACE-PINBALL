@@ -30,7 +30,7 @@ CGooeyGame::CGooeyGame(void) :
 	m_nMaxLevel = 0;
 	m_nUnlockedLevel = 1;
 	m_bLevelCompleted = true;
-	gravstr = 5.0;
+	grvmod = 100000;
 }
 
 CGooeyGame::~CGooeyGame(void)
@@ -107,26 +107,26 @@ void CGooeyGame::PaddleControl()
 {
 	for (CSprite* paddles : theFlippers)
 	{
-		if (IsKeyDown(SDLK_a) && theFlippers.back()->GetRotation() > -40)
+		if (IsKeyDown(SDLK_a) && theFlippers.back()->GetRotation() > -60)
 		{
 			theFlippers.back()->Rotate(-4);
 
 
 
 		}
-		if (IsKeyDown(SDLK_d) && theFlippers.front()->GetRotation() < 40)
+		if (IsKeyDown(SDLK_d) && theFlippers.front()->GetRotation() < 60)
 		{
 			theFlippers.front()->Rotate(4);
 
 		}
 		
-		if (!IsKeyDown(SDLK_a) && theFlippers.back()->GetRotation() < 40)
+		if (!IsKeyDown(SDLK_a) && theFlippers.back()->GetRotation() < 20)
 		{
-				theFlippers.back()->Rotate(4);
+				theFlippers.back()->Rotate(8);
 		}
-		if (!IsKeyDown(SDLK_d) && theFlippers.front()->GetRotation() > -40)
+		if (!IsKeyDown(SDLK_d) && theFlippers.front()->GetRotation() > -20)
 		{
-				theFlippers.front()->Rotate(-4);
+				theFlippers.front()->Rotate(-8);
 
 		}
 		
@@ -158,36 +158,71 @@ void CGooeyGame::OnUpdate()
 			// gravity!
 			theMarble.Accelerate(0, -GRAVITY);
 
-		//// TO DO: Test collisions with the walls
-		// Hint: When collision detected, apply reflection. Note that you have the RESTITUTION defined as 0.8 (see line 36)
-		// Also, play sound:  m_player.Play("hit.wav");
-
-
-		//planets and blackholes
-		if (launched == true)
-		{
-			for each(CSprite * planet in planets)
-			{
-				CVector planetpos = planet->GetPos();
-				CVector n = theMarble.GetPos() - planetpos;
-				CVector grv = n;
-
-				if (n.Length() < 100)
-				{
-					n.Normalise();
-					theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), n) * 1.5);
-				}
-			}
-
-
-
-		}
-		
+		// triggers planets and blackholes to work when in playfield
 		if (theMarble.HitTest(&launchtrigger))
 		{
 			launched = true;
 			theWalls.back()->SetPos(560, 840);
 		}
+
+		//planets and blackholes
+		tempgrav = CVector(0, 0);
+		if (launched == true)
+		{
+			//planets gravity and collision
+			for each(CSprite * planet in planets)
+			{
+				CVector planetpos = planet->GetPos();
+				CVector n = theMarble.GetPos() - planetpos;
+				CVector grv = n;
+				
+				//bounce off planets
+				if (n.Length() < 100)
+				{
+					n.Normalise();
+					theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), n)* 1.1);
+				}
+
+				//make gravity not always affect player to make game more responsive
+				if (grv.Length() < 200)
+				{
+					tempgrav = tempgrav + grv;
+				}
+			}
+
+			// Black hole gravity and collision
+			for each(CSprite * hole in blackHoles)
+			{
+				CVector holepos = hole->GetPos();
+				CVector n = theMarble.GetPos() - holepos;
+				CVector grv = n;
+
+				//blackholes kill player
+				if (n.Length() < 35)
+				{
+					KillMarble();
+				}
+
+				//make gravity not always affect player to make game more responsive
+				if (grv.Length() < 300)
+				{
+					tempgrav = tempgrav + grv;
+					tempgrav /= 2;
+				}
+
+			}
+
+			//apply the gravity to the player
+			if (tempgrav != CVector(0, 0))
+			{
+				gravstr = -10 / tempgrav.SqrLength() / 2;
+				tempgrav.Normalise();
+
+				theMarble.Accelerate(tempgrav* (gravstr* grvmod));
+			}
+		}
+
+		
 
 		//bumpers
 		for each(CSprite * bumper in bumpers)
@@ -202,17 +237,8 @@ void CGooeyGame::OnUpdate()
 			}
 		}
 
-		// Black holes
-		for each(CSprite * hole in blackHoles)
-		{
-			CVector holepos = hole->GetPos();
-			CVector n = theMarble.GetPos() - holepos;
+		
 
-			if (n.Length() < 35)
-			{
-				KillMarble();
-			}
-		}
 		// paddles
 		for each(CSprite * paddles in theFlippers) {
 			X = (paddles->GetWidth() / 2);
@@ -413,12 +439,6 @@ void CGooeyGame::OnUpdate()
 	if (theMarble.GetRight() < 0 || theMarble.GetLeft() > GetWidth() || theMarble.GetTop() < 0)
 		KillMarble();
 
-	// Test for hitting Goos
-	CSprite *pGooHit = NULL;
-	for (CSprite *pGoo : theGoos)
-		if (theMarble.HitTest(pGoo))
-			pGooHit = pGoo;
-
 	// point get
 	for (CSprite* point : collectibles)
 	{
@@ -503,7 +523,7 @@ void CGooeyGame::OnDraw(CGraphics* g)
 	}
 
 	if (IsGameMode())
-		*g << bottom << right << "LEVEL " << theMarble.GetSpeed();
+		*g << bottom << right << "LEVEL " << gravstr* grvmod;
 	
 	// Draw Menu Items
 	if (IsMenuMode())
@@ -635,6 +655,7 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	orangePortal.clear();
 
 	// create the new playfield, depending on the current level
+	m_nCurLevel = 3;
 	switch (m_nCurLevel)
 	{
 	// Level 1
@@ -649,18 +670,14 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.back()->Rotate(20);
 		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
-		theWalls.push_back(new CSprite(CRectangle(0, 570, 100, 20), "FlipperR.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 570, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
 		theWalls.push_back(new CSprite(CRectangle(0, 550, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theFlippers.push_back(new CSprite(CRectangle(345, 60,96,48), "FlipperR.bmp", CColor::Blue(), GetTime()));
-		theFlippers.back()->SetPivotFromCenter(28.5);
-		theFlippers.back()->Rotate(-40);
-		theFlippers.push_back(new CSprite(215, 60, "FlipperL.bmp",CColor::Blue(), GetTime()));
-		theFlippers.back()->SetPivotFromCenter(-28.5);
-		theFlippers.back()->Rotate(40);
+		//collectibles
 		collectibles.push_back(new CSprite(CRectangle(70, 600, 18, 48),  "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(50, 250, 18, 48), "Fuel rod.png", GetTime())); 
 		collectibles.push_back(new CSprite(CRectangle(490, 230, 18, 48), "Fuel rod.png", GetTime()));
+		//bumpers
 		bumpers.push_back(new CSprite(CRectangle(150, 700, 48, 48), "bumper.png", GetTime()));
 		bumpers.push_back(new CSprite(CRectangle(100, 300, 48, 48), "bumper.png", GetTime()));
 		bumpers.push_back(new CSprite(CRectangle(450, 350, 48, 48), "bumper.png", GetTime()));
@@ -677,12 +694,6 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.back()->Rotate(20);
 		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
-		theFlippers.push_back(new CSprite(345, 60, "FlipperR.bmp", GetTime()));
-		theFlippers.back()->SetPivotFromCenter(28.5);
-		theFlippers.back()->Rotate(-40);
-		theFlippers.push_back(new CSprite(215, 60, "FlipperL.bmp", GetTime()));
-		theFlippers.back()->SetPivotFromCenter(-28.5);
-		theFlippers.back()->Rotate(40);
 		collectibles.push_back(new CSprite(CRectangle(500, 750, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(50, 650, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(500, 500, 18, 48), "Fuel rod.png", GetTime()));
@@ -714,13 +725,6 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.back()->Rotate(20);
 		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
-		//Flippers
-		theFlippers.push_back(new CSprite(345, 60, "FlipperR.bmp", GetTime()));
-		theFlippers.back()->SetPivotFromCenter(28.5);
-		theFlippers.back()->Rotate(-40);
-		theFlippers.push_back(new CSprite(215, 60, "FlipperL.bmp", GetTime()));
-		theFlippers.back()->SetPivotFromCenter(-28.5);
-		theFlippers.back()->Rotate(40);
 		//collectibles
 		collectibles.push_back(new CSprite(CRectangle(520, 600, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(30, 450, 18, 48), "Fuel rod.png", GetTime()));
@@ -729,7 +733,9 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		bumpers.push_back(new CSprite(CRectangle(30, 150, 48, 48), "bumper.png", GetTime()));
 		bumpers.push_back(new CSprite(CRectangle(500, 750, 48, 48), "bumper.png", GetTime()));
 		//Black hole
-		blackHoles.push_back(new CSprite(CRectangle(30, 580, 24*3, 24*3), "Bhole.png", GetTime()));
+		// i like how this one is directly in line of where the player starts, great game design
+		// both are apparently lmao
+		//blackHoles.push_back(new CSprite(CRectangle(30, 580, 24*3, 24*3), "Bhole.png", GetTime()));
 		blackHoles.push_back(new CSprite(CRectangle(480, 300, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
 		break;
 
@@ -750,13 +756,6 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.push_back(new CSprite(CRectangle(450, 300, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(30, 360, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(520, 700, 18, 48), "Fuel rod.png", GetTime()));
-		//Flippers
-		theFlippers.push_back(new CSprite(345, 60, "FlipperR.bmp", GetTime()));
-		theFlippers.back()->SetPivotFromCenter(28.5);
-		theFlippers.back()->Rotate(-40);
-		theFlippers.push_back(new CSprite(215, 60, "FlipperL.bmp", GetTime()));
-		theFlippers.back()->SetPivotFromCenter(-28.5);
-		theFlippers.back()->Rotate(40);
 		//Planet
 		planets.push_back(new CSprite(CRectangle(450, 500, 100, 200), "PlanetR.png", GetTime()));
 		//Portal
@@ -785,10 +784,7 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		collectibles.push_back(new CSprite(CRectangle(330, 730, 18, 48), "Fuel rod.png", GetTime()));
 		blackHoles.push_back(new CSprite(CRectangle(30, 750, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
 		blackHoles.push_back(new CSprite(CRectangle(480, 750, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
-		//Flippers
-		theFlippers.push_back(new CSprite(345, 60, "FlipperR.bmp", GetTime()));
-		theFlippers.push_back(new CSprite(215, 60, "FlipperL.bmp", GetTime()));
-		
+
 		//portals
 		bluePortal.push_back(new CSprite(CRectangle(20, 470, 64, 64), "Portal_blue.png", GetTime()));
 		orangePortal.push_back(new CSprite(CRectangle(480, 320, 64, 64), "Portal_red.png", GetTime()));
@@ -802,9 +798,14 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		collectibles.push_back(new CSprite(CRectangle(150, 250, 18, 48), "Fuel rod.png", GetTime()));
 	}
 
-	// kinda important dont delete LUCAS
+	// In all levels
 	theWalls.push_back(new CSprite(CRectangle(550, 990, 20, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
-	// xoxo love u
+	//Flippers
+	theFlippers.push_back(new CSprite(CRectangle(303, 37, 90, 36), "FlipperR.bmp", CColor::Blue(), GetTime()));
+	theFlippers.back()->SetPivotFromCenter(24, 1);
+	theFlippers.push_back(new CSprite(CRectangle(178, 36, 90, 36), "FlipperL.bmp", CColor::Blue(), GetTime()));
+	theFlippers.back()->SetPivotFromCenter(-24, 1);
+
 
 	m_bLevelCompleted = false;
 }

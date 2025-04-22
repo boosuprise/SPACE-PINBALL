@@ -18,8 +18,11 @@ protected:
 	bool hitwall;
 	bool flagTrue;
 
+	int grvmod;
+
 	float gravstr;
 	float grav;
+	CVector tempgrav;
 
 	bool launched;
 	CSpriteRect launchtrigger;
