@@ -10,8 +10,8 @@ CGooeyGame::CGooeyGame(void) :
 	theCongratsScreen("congrats.png"),
 	theMarble(20, 20, "Player.png", 0),
 	//theCannon(580, 56, "cannon.png", 0),
-	//theLPaddle(215, 60, "FlipperL.png", 0),
-	//theRPaddle(345, 60, "FlipperR.png", 0),
+	//theLPaddle(215, 60, "FlipperL.bmp", 0),
+	//theRPaddle(345, 60, "FlipperR.bmp", 0),
 	theBarrel(620, 70, "barrel.png", 0),
 	thePowerSlider(CRectangle(12, 2, 200, 20), CColor(255,255,255,0), CColor::Black(), 0),
 	thePowerMarker(CRectangle(12, 2, 200, 20), CColor::Blue(), 0),
@@ -649,13 +649,13 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.back()->Rotate(20);
 		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
-		theWalls.push_back(new CSprite(CRectangle(0, 570, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 570, 100, 20), "FlipperR.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
 		theWalls.push_back(new CSprite(CRectangle(0, 550, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theFlippers.push_back(new CSprite(345, 60, "FlipperR.png", GetTime()));
+		theFlippers.push_back(new CSprite(CRectangle(345, 60,96,48), "FlipperR.bmp", CColor::Blue(), GetTime()));
 		theFlippers.back()->SetPivotFromCenter(28.5);
 		theFlippers.back()->Rotate(-40);
-		theFlippers.push_back(new CSprite(215, 60, "FlipperL.png", GetTime()));
+		theFlippers.push_back(new CSprite(215, 60, "FlipperL.bmp",CColor::Blue(), GetTime()));
 		theFlippers.back()->SetPivotFromCenter(-28.5);
 		theFlippers.back()->Rotate(40);
 		collectibles.push_back(new CSprite(CRectangle(70, 600, 18, 48),  "Fuel rod.png", GetTime()));
@@ -677,10 +677,10 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.back()->Rotate(20);
 		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
-		theFlippers.push_back(new CSprite(345, 60, "FlipperR.png", GetTime()));
+		theFlippers.push_back(new CSprite(345, 60, "FlipperR.bmp", GetTime()));
 		theFlippers.back()->SetPivotFromCenter(28.5);
 		theFlippers.back()->Rotate(-40);
-		theFlippers.push_back(new CSprite(215, 60, "FlipperL.png", GetTime()));
+		theFlippers.push_back(new CSprite(215, 60, "FlipperL.bmp", GetTime()));
 		theFlippers.back()->SetPivotFromCenter(-28.5);
 		theFlippers.back()->Rotate(40);
 		collectibles.push_back(new CSprite(CRectangle(500, 750, 18, 48), "Fuel rod.png", GetTime()));
@@ -715,10 +715,10 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
 		//Flippers
-		theFlippers.push_back(new CSprite(345, 60, "FlipperR.png", GetTime()));
+		theFlippers.push_back(new CSprite(345, 60, "FlipperR.bmp", GetTime()));
 		theFlippers.back()->SetPivotFromCenter(28.5);
 		theFlippers.back()->Rotate(-40);
-		theFlippers.push_back(new CSprite(215, 60, "FlipperL.png", GetTime()));
+		theFlippers.push_back(new CSprite(215, 60, "FlipperL.bmp", GetTime()));
 		theFlippers.back()->SetPivotFromCenter(-28.5);
 		theFlippers.back()->Rotate(40);
 		//collectibles
@@ -751,10 +751,10 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		collectibles.push_back(new CSprite(CRectangle(30, 360, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(520, 700, 18, 48), "Fuel rod.png", GetTime()));
 		//Flippers
-		theFlippers.push_back(new CSprite(345, 60, "FlipperR.png", GetTime()));
+		theFlippers.push_back(new CSprite(345, 60, "FlipperR.bmp", GetTime()));
 		theFlippers.back()->SetPivotFromCenter(28.5);
 		theFlippers.back()->Rotate(-40);
-		theFlippers.push_back(new CSprite(215, 60, "FlipperL.png", GetTime()));
+		theFlippers.push_back(new CSprite(215, 60, "FlipperL.bmp", GetTime()));
 		theFlippers.back()->SetPivotFromCenter(-28.5);
 		theFlippers.back()->Rotate(40);
 		//Planet
@@ -786,8 +786,8 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		blackHoles.push_back(new CSprite(CRectangle(30, 750, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
 		blackHoles.push_back(new CSprite(CRectangle(480, 750, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
 		//Flippers
-		theFlippers.push_back(new CSprite(345, 60, "FlipperR.png", GetTime()));
-		theFlippers.push_back(new CSprite(215, 60, "FlipperL.png", GetTime()));
+		theFlippers.push_back(new CSprite(345, 60, "FlipperR.bmp", GetTime()));
+		theFlippers.push_back(new CSprite(215, 60, "FlipperL.bmp", GetTime()));
 		
 		//portals
 		bluePortal.push_back(new CSprite(CRectangle(20, 470, 64, 64), "Portal_blue.png", GetTime()));
