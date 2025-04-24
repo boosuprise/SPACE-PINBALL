@@ -204,10 +204,10 @@ void CGooeyGame::OnUpdate()
 				}
 
 				//make gravity not always affect player to make game more responsive
-				if (grv.Length() < 300)
+				if (grv.Length() < 350)
 				{
 					tempgrav = tempgrav + grv;
-					tempgrav /= 2;
+					tempgrav *= 2;
 				}
 
 			}
@@ -735,8 +735,8 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		//Black hole
 		// i like how this one is directly in line of where the player starts, great game design
 		// both are apparently lmao
-		//blackHoles.push_back(new CSprite(CRectangle(30, 580, 24*3, 24*3), "Bhole.png", GetTime()));
-		blackHoles.push_back(new CSprite(CRectangle(480, 300, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
+		//blackHoles.push_back(new CSprite(CRectangle(30, 580, 24*3, 24*3), "Bhole.bmp",CColor::Blue(), GetTime()));
+		blackHoles.push_back(new CSprite(CRectangle(480, 300, 24 * 3, 24 * 3), "Bhole.bmp", CColor::Blue(), GetTime()));
 		break;
 
 	//Level 4
@@ -782,8 +782,8 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		collectibles.push_back(new CSprite(CRectangle(430, 500, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(130, 700, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(330, 730, 18, 48), "Fuel rod.png", GetTime()));
-		blackHoles.push_back(new CSprite(CRectangle(30, 750, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
-		blackHoles.push_back(new CSprite(CRectangle(480, 750, 24 * 3, 24 * 3), "Bhole.png", GetTime()));
+		blackHoles.push_back(new CSprite(CRectangle(30, 750, 24 * 3, 24 * 3), "Bhole.bmp", CColor::Blue(), GetTime()));
+		blackHoles.push_back(new CSprite(CRectangle(480, 750, 24 * 3, 24 * 3), "Bhole.bmp", CColor::Blue(), GetTime()));
 
 		//portals
 		bluePortal.push_back(new CSprite(CRectangle(20, 470, 64, 64), "Portal_blue.png", GetTime()));
@@ -799,6 +799,12 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	}
 
 	// In all levels
+
+	for (CSprite* bhole : blackHoles)
+	{
+		bhole->SetOmega(400);
+	}
+
 	theWalls.push_back(new CSprite(CRectangle(550, 990, 20, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
 	//Flippers
 	theFlippers.push_back(new CSprite(CRectangle(303, 37, 90, 36), "FlipperR.bmp", CColor::Blue(), GetTime()));
