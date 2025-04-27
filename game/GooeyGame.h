@@ -80,6 +80,7 @@ public:
 	float GetShotPower();
 	float Shoot();
 	void PaddleControl();
+	void PortalControl();
 
 	CSpriteButton *FindButton(Sint16 buttonId);
 

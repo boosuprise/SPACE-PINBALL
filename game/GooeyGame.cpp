@@ -103,13 +103,144 @@ float CGooeyGame::Shoot()
 	return f;
 }
 
+void CGooeyGame::PortalControl()
+{
+	for (CSprite* pBluePortal : bluePortal) 
+	{
+		if (theMarble.HitTest(pBluePortal)) 
+		{
+			for each(CSprite * pWall in theWalls) 
+			{
+				if ((string)pWall->GetProperty("tag") == "part_1") {
+					pWall->SetX(pWall->GetX() + 1000);
+				}
+				if ((string)pWall->GetProperty("tag") == "part_2") {
+					pWall->SetX(pWall->GetX() - 1000);
+				}
+			}
+			for each(CSprite * pCollectibles in collectibles) 
+			{
+				if ((string)pCollectibles->GetProperty("tag") == "part_1") {
+					pCollectibles->SetX(pCollectibles->GetX() + 1000);
+				}
+				if ((string)pCollectibles->GetProperty("tag") == "part_2") {
+					pCollectibles->SetX(pCollectibles->GetX() - 1000);
+				}
+			}
+			for each (CSprite* pBluePortal in bluePortal)
+			{
+				if ((string)pBluePortal->GetProperty("tag") == "part_1") {
+					pBluePortal->SetX(pBluePortal->GetX() + 1000);
+				}
+				if ((string)pBluePortal->GetProperty("tag") == "part_2") {
+					pBluePortal->SetX(pBluePortal->GetX() - 1000);
+				}
+			}
+			for each (CSprite * pPlanet in planets)
+			{
+				if ((string)pPlanet->GetProperty("tag") == "part_1") {
+					pPlanet->SetX(pPlanet->GetX() + 1000);
+				}
+				if ((string)pPlanet->GetProperty("tag") == "part_2") {
+					pPlanet->SetX(pPlanet->GetX() - 1000);
+				}
+			}
+			for each(CSprite * pBlackHoles in blackHoles)
+			{
+				if ((string)pBlackHoles->GetProperty("tag") == "part_1") {
+					pBlackHoles->SetX(pBlackHoles->GetX() + 1000);
+				}
+				if ((string)pBlackHoles->GetProperty("tag") == "part_2") {
+					pBlackHoles->SetX(pBlackHoles->GetX() - 1000);
+				}
+			}
+			for each(CSprite * pOrangePortal in orangePortal)
+			{
+				if ((string)pOrangePortal->GetProperty("tag") == "part_1") {
+					pOrangePortal->SetX(pOrangePortal->GetX() + 1000);
+				}
+				if ((string)pOrangePortal->GetProperty("tag") == "part_2") {
+					pOrangePortal->SetX(pOrangePortal->GetX() - 1000);
+				}
+			}
+		}
+	}
+		
+	for (CSprite* pOrangePortal : orangePortal)
+	{
+		if (theMarble.HitTest(pOrangePortal))
+		{
+			for each(CSprite * pWall in theWalls)
+			{
+				if ((string)pWall->GetProperty("tag") == "part_2") {
+					pWall->SetX(pWall->GetX() + 1000);
+				}
+				if ((string)pWall->GetProperty("tag") == "part_1") {
+					pWall->SetX(pWall->GetX() - 1000);
+				}
+			}
+			for each(CSprite * pCollectibles in collectibles)
+			{
+				if ((string)pCollectibles->GetProperty("tag") == "part_2") {
+					pCollectibles->SetX(pCollectibles->GetX() + 1000);
+				}
+				if ((string)pCollectibles->GetProperty("tag") == "part_1") {
+					pCollectibles->SetX(pCollectibles->GetX() - 1000);
+				}
+			}
+			for each(CSprite * pBluePortal in bluePortal)
+			{
+				if ((string)pBluePortal->GetProperty("tag") == "part_2") {
+					pBluePortal->SetX(pBluePortal->GetX() + 1000);
+				}
+				if ((string)pBluePortal->GetProperty("tag") == "part_1") {
+					pBluePortal->SetX(pBluePortal->GetX() - 1000);
+				}
+			}
+			for each(CSprite * pPlanet in planets)
+			{
+				if ((string)pPlanet->GetProperty("tag") == "part_2") {
+					pPlanet->SetX(pPlanet->GetX() + 1000);
+				}
+				if ((string)pPlanet->GetProperty("tag") == "part_1") {
+					pPlanet->SetX(pPlanet->GetX() - 1000);
+				}
+			}
+			for each(CSprite * pBlackHoles in blackHoles)
+			{
+				if ((string)pBlackHoles->GetProperty("tag") == "part_2") {
+					pBlackHoles->SetX(pBlackHoles->GetX() + 1000);
+				}
+				if ((string)pBlackHoles->GetProperty("tag") == "part_1") {
+					pBlackHoles->SetX(pBlackHoles->GetX() - 1000);
+				}
+			}
+			for each(CSprite * pOrangePortal in orangePortal)
+			{
+				if ((string)pOrangePortal->GetProperty("tag") == "part_2") {
+					pOrangePortal->SetX(pOrangePortal->GetX() + 1000);
+				}
+				if ((string)pOrangePortal->GetProperty("tag") == "part_1") {
+					pOrangePortal->SetX(pOrangePortal->GetX() - 1000);
+				}
+			}
+		}
+	}
+	
+
+}
+
 void CGooeyGame::PaddleControl()
 {
+	Uint32 dt = GetDeltaTime();	// time since the last frame (in milliseconds)
+	timeFrame = float(dt) / 1000.f;
+
 	for (CSprite* paddles : theFlippers)
 	{
 		if (IsKeyDown(SDLK_a) && theFlippers.back()->GetRotation() > -60)
 		{
 			theFlippers.back()->Rotate(-4);
+
 
 
 
@@ -147,6 +278,7 @@ void CGooeyGame::OnUpdate()
 
 	launchtrigger.Update(t);
 	PaddleControl();
+	PortalControl();
 	
 	if (!theMarble.IsDead() && theMarble.GetSpeed() > 0)
 	{
@@ -262,7 +394,6 @@ void CGooeyGame::OnUpdate()
 						float f2 = (tx - vx * f1) / (X + R);
 						if (f1 >= 0 && f1 <= 1 && f2 > -1 && f2 <= 1) {
 							theMarble.SetVelocity(Reflect(theMarble.GetVelocity(), n));
-							theMarble.SetYVelocity(theMarble.GetYVelocity() * 0.5);
 							m_player.Play("hit.wav");
 						}
 					}
@@ -742,54 +873,83 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	//Level 4
 	case 4:
 		theWalls.push_back(new CSprite(CRectangle(0, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetProperty("tag", "part_1");
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 740), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetProperty("tag", "part_1");
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetProperty("tag", "part_1");
 		theWalls.push_back(new CSprite(CRectangle(560, 790, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(45);
+		theWalls.back()->SetProperty("tag", "part_1");
 		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
+		theWalls.back()->SetProperty("tag", "part_1");
 		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
+		theWalls.back()->SetProperty("tag", "part_1");
 		theWalls.push_back(new CSprite(CRectangle(0, 450, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetProperty("tag", "part_1");
 		theWalls.push_back(new CSprite(CRectangle(0, 300, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(30);
+		theWalls.back()->SetProperty("tag", "part_1");
 		theWalls.push_back(new CSprite(CRectangle(450, 300, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetProperty("tag", "part_1");
 		collectibles.push_back(new CSprite(CRectangle(30, 360, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.back()->SetProperty("tag", "part_1");
 		collectibles.push_back(new CSprite(CRectangle(520, 700, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.back()->SetProperty("tag", "part_1");
 		//Planet
 		planets.push_back(new CSprite(CRectangle(450, 500, 100, 200), "PlanetR.png", GetTime()));
+		planets.back()->SetProperty("tag", "part_1");
 		//Portal
-		bluePortal.push_back(new CSprite(CRectangle(20, 470, 64, 64), "Portal_blue.png", GetTime()));
-		orangePortal.push_back(new CSprite(CRectangle(480, 320, 64, 64), "Portal_red.png", GetTime()));
-		break;
-	case 5: //second part to level 4
-		theWalls.push_back(new CSprite(CRectangle(0, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 740), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(560, 790, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		bluePortal.push_back(new CSprite(CRectangle(480, 320, 64, 64), "Portal_blue.png", GetTime()));
+		bluePortal.back()->SetProperty("tag", "part_1");
+	
+		theWalls.push_back(new CSprite(CRectangle(1000, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetProperty("tag", "part_2");
+		theWalls.push_back(new CSprite(CRectangle(1550, 0, 20, 740), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetProperty("tag", "part_2");
+		theWalls.push_back(new CSprite(CRectangle(1000, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetProperty("tag", "part_2");
+		theWalls.push_back(new CSprite(CRectangle(1560, 790, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(45);
-		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetProperty("tag", "part_2");
+		theWalls.push_back(new CSprite(CRectangle(1000, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
-		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetProperty("tag", "part_2");
+		theWalls.push_back(new CSprite(CRectangle(1370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
-		theWalls.push_back(new CSprite(CRectangle(0, 450, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(450, 300, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		collectibles.push_back(new CSprite(CRectangle(150, 250, 18, 48), "Fuel rod.png", GetTime()));
-		collectibles.push_back(new CSprite(CRectangle(350, 200, 18, 48), "Fuel rod.png", GetTime()));
-		collectibles.push_back(new CSprite(CRectangle(450, 330, 18, 48), "Fuel rod.png", GetTime()));
-		collectibles.push_back(new CSprite(CRectangle(320, 400, 18, 48), "Fuel rod.png", GetTime()));
-		collectibles.push_back(new CSprite(CRectangle(120, 480, 18, 48), "Fuel rod.png", GetTime()));
-		collectibles.push_back(new CSprite(CRectangle(430, 500, 18, 48), "Fuel rod.png", GetTime()));
-		collectibles.push_back(new CSprite(CRectangle(130, 700, 18, 48), "Fuel rod.png", GetTime()));
-		collectibles.push_back(new CSprite(CRectangle(330, 730, 18, 48), "Fuel rod.png", GetTime()));
-		blackHoles.push_back(new CSprite(CRectangle(30, 750, 24 * 3, 24 * 3), "Bhole.bmp", CColor::Blue(), GetTime()));
-		blackHoles.push_back(new CSprite(CRectangle(480, 750, 24 * 3, 24 * 3), "Bhole.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetProperty("tag", "part_2");
+		theWalls.push_back(new CSprite(CRectangle(1000, 450, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetProperty("tag", "part_2");
+		theWalls.push_back(new CSprite(CRectangle(1450, 300, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetProperty("tag", "part_2");
+		collectibles.push_back(new CSprite(CRectangle(1150, 250, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.back()->SetProperty("tag", "part_2");
+		collectibles.push_back(new CSprite(CRectangle(1350, 200, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.back()->SetProperty("tag", "part_2");
+		collectibles.push_back(new CSprite(CRectangle(1450, 330, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.back()->SetProperty("tag", "part_2");
+		collectibles.push_back(new CSprite(CRectangle(1320, 400, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.back()->SetProperty("tag", "part_2");
+		collectibles.push_back(new CSprite(CRectangle(1120, 480, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.back()->SetProperty("tag", "part_2");
+		collectibles.push_back(new CSprite(CRectangle(1430, 500, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.back()->SetProperty("tag", "part_2");
+		collectibles.push_back(new CSprite(CRectangle(1130, 700, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.back()->SetProperty("tag", "part_2");
+		collectibles.push_back(new CSprite(CRectangle(1330, 730, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.back()->SetProperty("tag", "part_2");
+		blackHoles.push_back(new CSprite(CRectangle(1030, 750, 24 * 3, 24 * 3), "Bhole.bmp", CColor::Blue(), GetTime()));
+		blackHoles.back()->SetProperty("tag", "part_2");
+		blackHoles.push_back(new CSprite(CRectangle(1480, 750, 24 * 3, 24 * 3), "Bhole.bmp", CColor::Blue(), GetTime()));
+		blackHoles.back()->SetProperty("tag", "part_2");
 
 		//portals
-		bluePortal.push_back(new CSprite(CRectangle(20, 470, 64, 64), "Portal_blue.png", GetTime()));
-		orangePortal.push_back(new CSprite(CRectangle(480, 320, 64, 64), "Portal_red.png", GetTime()));
+		orangePortal.push_back(new CSprite(CRectangle(1020, 470, 64, 64), "Portal_red.png", GetTime()));
+		orangePortal.back()->SetProperty("tag", "part_2");
 		break;
-	case 6:
+	case 5:
 		
 		theWalls.push_back(new CSprite(CRectangle(0, 90, 500, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
