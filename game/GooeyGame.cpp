@@ -9,18 +9,15 @@ CGooeyGame::CGooeyGame(void) :
 	theMenuScreen("menu.png"),
 	theCongratsScreen("congrats.png"),
 	theMarble(20, 20, "Player.png", 0),
-	//theCannon(580, 56, "cannon.png", 0),
-	//theLPaddle(215, 60, "FlipperL.bmp", 0),
-	//theRPaddle(345, 60, "FlipperR.bmp", 0),
-	theBarrel(620, 70, "barrel.png", 0),
+	theBarrel(620, 760, "barrel.png", 0),
 	thePowerSlider(CRectangle(12, 2, 200, 20), CColor(255,255,255,0), CColor::Black(), 0),
 	thePowerMarker(CRectangle(12, 2, 200, 20), CColor::Blue(), 0),
-	launchtrigger(CRectangle(560, 845, 5, 50), CColor::Red(), 0)
+	launchtrigger(CRectangle(560, 745, 5, 50), CColor::Red(), 0)
 
 {
 	m_pButtonPressed = NULL;
 	m_bAimTime = 0;
-	theBarrel.SetPivotFromCenter(-40, 0);
+	theBarrel.SetPivotFromCenter(-17, 0);
 	theLPaddle.SetPivotFromCenter(-28.5, 0);
 	theRPaddle.SetPivotFromCenter(28.5, 0);
 	theLPaddle.SetRotation(40);
@@ -294,7 +291,7 @@ void CGooeyGame::OnUpdate()
 		if (theMarble.HitTest(&launchtrigger))
 		{
 			launched = true;
-			theWalls.back()->SetPos(560, 840);
+			theWalls.back()->SetPos(560, 740);
 		}
 
 		//planets and blackholes
@@ -786,17 +783,15 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	orangePortal.clear();
 
 	// create the new playfield, depending on the current level
-	m_nCurLevel = 4;
+	m_nCurLevel = 3;
 	switch (m_nCurLevel)
 	{
 	// Level 1
 	case 1:
-		theWalls.push_back(new CSprite(CRectangle(0, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 800, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 740), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(600, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(560, 790, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(45);
 		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
 		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
@@ -816,11 +811,9 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 
 	//Level 2
 	case 2:
-		theWalls.push_back(new CSprite(CRectangle(0, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 800, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 740), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(560, 790, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(45);
 		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
 		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
@@ -837,16 +830,17 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	//Level 3
 	case 3:
 		//walls
-		theWalls.push_back(new CSprite(CRectangle(0, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 800, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 740), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(560, 790, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(45);
 		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
-		theWalls.push_back(new CSprite(CRectangle(0, 550, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(30);
+		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(-20);
+
 		theWalls.push_back(new CSprite(CRectangle(0, 400, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->Rotate(30);
+		theWalls.push_back(new CSprite(CRectangle(0, 550, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(30);
 		theWalls.push_back(new CSprite(CRectangle(460, 550, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-30);
@@ -854,8 +848,6 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.back()->Rotate(-20);
 		theWalls.push_back(new CSprite(CRectangle(410, 300, 70, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
-		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(-20);
 		//collectibles
 		collectibles.push_back(new CSprite(CRectangle(520, 600, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(30, 450, 18, 48), "Fuel rod.png", GetTime()));
@@ -872,14 +864,9 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 
 	//Level 4
 	case 4:
-		theWalls.push_back(new CSprite(CRectangle(0, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->SetProperty("tag", "part_1");
+		theWalls.push_back(new CSprite(CRectangle(0, 800, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 740), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->SetProperty("tag", "part_1");
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->SetProperty("tag", "part_1");
-		theWalls.push_back(new CSprite(CRectangle(560, 790, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(45);
 		theWalls.back()->SetProperty("tag", "part_1");
 		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
@@ -904,15 +891,8 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		//Portal
 		bluePortal.push_back(new CSprite(CRectangle(480, 320, 64, 64), "Portal_blue.png", GetTime()));
 		bluePortal.back()->SetProperty("tag", "part_1");
-	
-		theWalls.push_back(new CSprite(CRectangle(1000, 900, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->SetProperty("tag", "part_2");
-		theWalls.push_back(new CSprite(CRectangle(1550, 0, 20, 740), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->SetProperty("tag", "part_2");
-		theWalls.push_back(new CSprite(CRectangle(1000, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->SetProperty("tag", "part_2");
-		theWalls.push_back(new CSprite(CRectangle(1560, 790, 60, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(45);
+
+		//second half of level
 		theWalls.back()->SetProperty("tag", "part_2");
 		theWalls.push_back(new CSprite(CRectangle(1000, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
@@ -995,7 +975,11 @@ void CGooeyGame::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode)
 		StopGame();
 	if (sym == SDLK_SPACE)
 		PauseGame();
-	
+
+	if (sym == SDLK_SPACE && IsGameMode())
+	{
+		//theMarble.SetPos()
+	}
 	
 }
 
@@ -1106,7 +1090,7 @@ void CGooeyGame::OnLButtonUp(Uint16 x,Uint16 y)
 			if (P > 0)
 			{
 				// create the nozzle-rotated vector and shoot the marble!
-				CVector nozzle(95, 0);
+				CVector nozzle(42, 0);
 				theBarrel.LtoG(nozzle, true);
 				theMarble.SetPosition(nozzle);
 				theMarble.Accelerate(P * Normalize(CVector(x, y) - theBarrel.GetPosition()));
