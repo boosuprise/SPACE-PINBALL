@@ -9,7 +9,7 @@ CGooeyGame::CGooeyGame(void) :
 	theMenuScreen("menu.png"),
 	theCongratsScreen("congrats.png"),
 	theMarble(20, 20, "Player.png", 0),
-	theBarrel(620, 760, "barrel.png", 0),
+	theBarrel(620, 780, "barrel.png", 0),
 	endCannon(CRectangle(270, 0, 36, 72), "Cannon.bmp", CColor::Blue(), 0),
 	thePowerSlider(CRectangle(12, 2, 200, 20), CColor(255,255,255,0), CColor::Black(), 0),
 	thePowerMarker(CRectangle(12, 2, 200, 20), CColor::Blue(), 0),
@@ -664,10 +664,6 @@ void CGooeyGame::OnDraw(CGraphics* g)
 	theMarble.Draw(g);
 	theBarrel.Draw(g);
 	theCannon.Draw(g);
-	//theLPaddle.Draw(g);
-	//theRPaddle.Draw(g);
-
-	launchtrigger.Draw(g);
 
 	// Draw Power Meter
 	float x = (GetShotPower() - MIN_POWER) * thePowerSlider.GetWidth() / (MAX_POWER - MIN_POWER);
@@ -680,9 +676,6 @@ void CGooeyGame::OnDraw(CGraphics* g)
 		thePowerMarker.Draw(g);
 		thePowerSlider.Draw(g);
 	}
-
-	if (IsGameMode())
-		*g << bottom << right << "LEVEL " << gravstr* grvmod;
 	
 	// Draw Menu Items
 	if (IsMenuMode())
@@ -718,8 +711,8 @@ void CGooeyGame::OnInitialize()
 	SDL_FillRect(theMenuBack.GetSurface(), NULL, col);
 
 	// setup buttons
-	theButtons.push_back(new CSpriteButton(50, 695, 80, 30, CMD_MENU, CColor::Black(), CColor(192, 192, 192), "menu", "arial.ttf", 16, GetTime()));
-	theButtons.push_back(new CSpriteButton(140, 695, 80, 30, CMD_EXPLODE, CColor::Black(), CColor::LightGray(), "explode", "arial.ttf", 16, GetTime()));
+	theButtons.push_back(new CSpriteButton(450, 15, 80, 30, CMD_MENU, CColor::Black(), CColor(192, 192, 192), "menu", "arial.ttf", 16, GetTime()));
+	theButtons.push_back(new CSpriteButton(140, 6900, 80, 30, CMD_EXPLODE, CColor::Black(), CColor::LightGray(), "explode", "arial.ttf", 16, GetTime()));
 
 	// setup level buttons
 	float x = (GetWidth() - (m_nMaxLevel - 1) * 50) / 2;
@@ -817,7 +810,6 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	orangePortal.clear();
 
 	// create the new playfield, depending on the current level
-	m_nCurLevel = 4;
 	switch (m_nCurLevel)
 	{
 	// Level 1
@@ -883,9 +875,10 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.push_back(new CSprite(CRectangle(410, 300, 70, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
 		//collectibles
-		collectibles.push_back(new CSprite(CRectangle(520, 600, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(480, 600, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(30, 450, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(405, 250, 18, 48), "Fuel rod.png", GetTime()));
+		collectibles.push_back(new CSprite(CRectangle(300, 150, 18, 48), "Fuel rod.png", GetTime()));
 		//bumpers
 		bumpers.push_back(new CSprite(CRectangle(30, 150, 48, 48), "bumper.png", GetTime()));
 		bumpers.push_back(new CSprite(CRectangle(500, 650, 48, 48), "bumper.png", GetTime()));
@@ -901,7 +894,6 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.push_back(new CSprite(CRectangle(0, 800, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 740), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->SetProperty("tag", "part_1");
 		theWalls.push_back(new CSprite(CRectangle(0, 90, 150, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
 		theWalls.back()->SetProperty("tag", "part_1");
@@ -975,8 +967,8 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 
 	theWalls.push_back(new CSprite(CRectangle(550, 990, 20, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
 
-	theFlippers.push_back(new CSprite(CRectangle(430, 37, 135, 36), "FlipperR.bmp", CColor::Blue(), GetTime()));
-	theFlippers.push_back(new CSprite(CRectangle(50, 36, 135, 36), "FlipperL.bmp", CColor::Blue(), GetTime()));
+	theFlippers.push_back(new CSprite(CRectangle(430, 45, 135, 36), "FlipperR.bmp", CColor::Blue(), GetTime()));
+	theFlippers.push_back(new CSprite(CRectangle(50, 45, 135, 36), "FlipperL.bmp", CColor::Blue(), GetTime()));
 	
 
 	m_bLevelCompleted = false;
