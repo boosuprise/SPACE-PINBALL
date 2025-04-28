@@ -10,6 +10,7 @@ CGooeyGame::CGooeyGame(void) :
 	theCongratsScreen("congrats.png"),
 	theMarble(20, 20, "Player.png", 0),
 	theBarrel(620, 760, "barrel.png", 0),
+	endCannon(CRectangle(270, 0, 36, 72), "Cannon.bmp", CColor::Blue(), 0),
 	thePowerSlider(CRectangle(12, 2, 200, 20), CColor(255,255,255,0), CColor::Black(), 0),
 	thePowerMarker(CRectangle(12, 2, 200, 20), CColor::Blue(), 0),
 	launchtrigger(CRectangle(560, 745, 5, 50), CColor::Red(), 0)
@@ -17,6 +18,7 @@ CGooeyGame::CGooeyGame(void) :
 {
 	m_pButtonPressed = NULL;
 	m_bAimTime = 0;
+	endCannon.SetPivotFromCenter(0, -10);
 	theBarrel.SetPivotFromCenter(-17, 0);
 	theLPaddle.SetPivotFromCenter(-28.5, 0);
 	theRPaddle.SetPivotFromCenter(28.5, 0);
@@ -63,7 +65,10 @@ void CGooeyGame::KillMarble()
 	if (theMarble.IsDying()) return;
 	theSplashes.push_back(new CSplash(theMarble.GetPosition(), CColor(80, 90, 110), 1.0, 80, 100, GetTime()));
 	theMarble.Die(0);
-	m_player.Play("marble.wav"); m_player.Volume(1.f);
+	if (endCannonReady == false)
+	{
+		m_player.Play("marble.wav"); m_player.Volume(1.f);
+	}
 	launched = false;
 	theWalls.back()->SetPos(560, 990);
 }
@@ -560,8 +565,11 @@ void CGooeyGame::OnUpdate()
 
 
 	// Kill very slow moving marbles
-	if (!theMarble.IsDying() && theMarble.GetSpeed() > 0 && theMarble.GetSpeed() < 0.1)
-		KillMarble();	// kill very slow moving marble
+	if (endCannonReady == false)
+	{
+		if (!theMarble.IsDying() && theMarble.GetSpeed() > 0 && theMarble.GetSpeed() < 0.1)
+			KillMarble();	// kill very slow moving marble
+	}
 
 	// Kill the marble if lost of sight
 	if (theMarble.GetRight() < 0 || theMarble.GetLeft() > GetWidth() || theMarble.GetTop() < 0)
@@ -584,6 +592,8 @@ void CGooeyGame::OnUpdate()
 		pSplash->Update(t);
 	theSplashes.remove_if(deleted<CSplash*>);
 
+	endCannon.Update(t);
+
 	// Respawn the Marble - when all splashes are gone
 	if (theMarble.IsDead() && theSplashes.size() == 0)
 		SpawnMarble();
@@ -593,6 +603,32 @@ void CGooeyGame::OnUpdate()
 	{
 		m_bLevelCompleted = true;
 		NewGame();
+	}
+
+	//Moves cannon left and right
+	if (endCannonLeft == true)
+	{
+		endCannon.SetRotation(endCannon.GetRotation() - 1);
+		if (endCannon.GetRotation() <= -30)
+		{
+			endCannonLeft = false;
+			endCannonRight = true;
+		}
+	}
+	if (endCannonRight == true)
+	{
+		endCannon.SetRotation(endCannon.GetRotation() + 1);
+		if (endCannon.GetRotation() >= 30)
+		{
+			endCannonLeft = true;
+			endCannonRight = false;
+		}
+	}
+	//When marble hits cannon
+	if (theMarble.HitTest(&endCannon))
+	{
+		SpawnMarble();
+		endCannonReady = true;
 	}
 }
 
@@ -620,6 +656,7 @@ void CGooeyGame::OnDraw(CGraphics* g)
 		pBluePortal->Draw(g);
 	for (CSprite* pOrangePortal : orangePortal)
 		pOrangePortal->Draw(g);
+	endCannon.Draw(g);
 	if (IsGameMode())
 	{
 		theButtons[1]->Enable(!theMarble.IsDying() && theMarble.GetSpeed() != 0);
@@ -751,7 +788,7 @@ void CGooeyGame::OnStartGame()
 
 void CGooeyGame::OnStartLevel(Sint16 nLevel)
 {
-	if (nLevel == 0) return;	// menu mode...
+	if (nLevel == 4) return;	// menu mode...
 
 	// if level not completed, it should be continued (this is when cancel pressed in level selection menu)
 	if (!m_bLevelCompleted)
@@ -759,6 +796,9 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 
 	// spawn the marble
 	SpawnMarble();
+
+	endCannonLeft = true;
+	endCannonReady = false;
 
 	// destroy the old playfield
 	for (CSprite *pWall : theWalls) delete pWall;
@@ -783,7 +823,7 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	orangePortal.clear();
 
 	// create the new playfield, depending on the current level
-	m_nCurLevel = 3;
+	m_nCurLevel = 4;
 	switch (m_nCurLevel)
 	{
 	// Level 1
@@ -946,11 +986,6 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	}
 
 	theWalls.push_back(new CSprite(CRectangle(550, 990, 20, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
-	//Flippers
-	theFlippers.push_back(new CSprite(CRectangle(303, 37, 90, 36), "FlipperR.bmp", CColor::Blue(), GetTime()));
-	theFlippers.back()->SetPivotFromCenter(24, 1);
-	theFlippers.push_back(new CSprite(CRectangle(178, 36, 90, 36), "FlipperL.bmp", CColor::Blue(), GetTime()));
-	theFlippers.back()->SetPivotFromCenter(-24, 1);
 
 
 	m_bLevelCompleted = false;
@@ -973,12 +1008,17 @@ void CGooeyGame::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode)
 {
 	if (sym == SDLK_F4 && (mod & (KMOD_LALT | KMOD_RALT)))
 		StopGame();
-	if (sym == SDLK_SPACE)
-		PauseGame();
 
-	if (sym == SDLK_SPACE && IsGameMode())
+	if (sym == SDLK_SPACE && IsGameMode() && endCannonReady == true)
 	{
-		//theMarble.SetPos()
+		CVector endCannonNozzle(270, 80);
+		//float x = cos(DEG2RAD(endCannon.GetRotation()));
+		float x = sin((endCannon.GetRotation() + 1) * 300);
+		float y = cos((endCannon.GetRotation() + 1) * 400);
+		cout << x;
+		theMarble.SetPosition(endCannonNozzle);
+		theMarble.Accelerate(750 * Normalize(CVector(x, y) - endCannon.GetPosition()));
+		endCannonReady = false;
 	}
 	
 }

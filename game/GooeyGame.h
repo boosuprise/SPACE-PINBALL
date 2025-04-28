@@ -17,6 +17,7 @@ protected:
 	int pts;
 	bool hitwall;
 	bool flagTrue;
+	bool endCannonLeft, endCannonRight, endCannonReady;
 
 	int grvmod;
 
@@ -31,7 +32,7 @@ protected:
 	CGraphics theBackground, theMenuBack, theMenuScreen, theCongratsScreen;
 
 	// Sprites:
-	CSprite theMarble, theCannon, theBarrel, theLPaddle,theRPaddle;
+	CSprite theMarble, theCannon, theBarrel, theLPaddle,theRPaddle, endCannon;
 	CSpriteRect thePowerSlider, thePowerMarker;
 
 	// Sprites collections. Splashes are displayed after the marble gets destroyed.
