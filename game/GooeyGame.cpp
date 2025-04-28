@@ -20,11 +20,6 @@ CGooeyGame::CGooeyGame(void) :
 	m_bAimTime = 0;
 	endCannon.SetPivotFromCenter(0, -10);
 	theBarrel.SetPivotFromCenter(-17, 0);
-	theLPaddle.SetPivotFromCenter(-28.5, 0);
-	theRPaddle.SetPivotFromCenter(28.5, 0);
-	theLPaddle.SetRotation(40);
-	theRPaddle.SetRotation(-40);
-
 	m_nCurLevel = 0;
 	m_nMaxLevel = 0;
 	m_nUnlockedLevel = 1;
@@ -234,32 +229,31 @@ void CGooeyGame::PortalControl()
 
 void CGooeyGame::PaddleControl()
 {
-	Uint32 dt = GetDeltaTime();	// time since the last frame (in milliseconds)
-	timeFrame = float(dt) / 1000.f;
+
 
 	for (CSprite* paddles : theFlippers)
 	{
-		if (IsKeyDown(SDLK_a) && theFlippers.back()->GetRotation() > -60)
+		if (IsKeyDown(SDLK_a) && theFlippers.back()->GetX() < 178)
 		{
-			theFlippers.back()->Rotate(-4);
+			theFlippers.back()->SetX(theFlippers.back()->GetX()+2);
 
 
 
 
 		}
-		if (IsKeyDown(SDLK_d) && theFlippers.front()->GetRotation() < 60)
+		if (IsKeyDown(SDLK_d) && theFlippers.front()->GetX() > 400)
 		{
-			theFlippers.front()->Rotate(4);
+			theFlippers.front()->SetX(theFlippers.front()->GetX() - 2);
 
 		}
 		
-		if (!IsKeyDown(SDLK_a) && theFlippers.back()->GetRotation() < 20)
+		if (!IsKeyDown(SDLK_a) && theFlippers.back()->GetX() > 75)
 		{
-				theFlippers.back()->Rotate(8);
+			theFlippers.back()->SetX(theFlippers.back()->GetX() - 2);
 		}
-		if (!IsKeyDown(SDLK_d) && theFlippers.front()->GetRotation() > -20)
+		if (!IsKeyDown(SDLK_d) && theFlippers.front()->GetX() < 500)
 		{
-				theFlippers.front()->Rotate(-8);
+				theFlippers.front()->SetX(theFlippers.front()->GetX() + 2);
 
 		}
 		
@@ -823,7 +817,7 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	orangePortal.clear();
 
 	// create the new playfield, depending on the current level
-	m_nCurLevel = 1;
+	m_nCurLevel = 4;
 	switch (m_nCurLevel)
 	{
 	// Level 1
@@ -832,9 +826,9 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 740), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(600, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 90, 150, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
-		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(420, 90, 150, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
 		theWalls.push_back(new CSprite(CRectangle(0, 570, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
@@ -854,9 +848,9 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.push_back(new CSprite(CRectangle(0, 800, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 740), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 90, 150, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
-		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(420, 90, 150, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
 		collectibles.push_back(new CSprite(CRectangle(500, 750, 18, 48), "Fuel rod.png", GetTime()));
 		collectibles.push_back(new CSprite(CRectangle(50, 650, 18, 48), "Fuel rod.png", GetTime()));
@@ -873,9 +867,9 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.push_back(new CSprite(CRectangle(0, 800, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 740), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 90, 150, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
-		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(420, 90, 150, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
 
 		theWalls.push_back(new CSprite(CRectangle(0, 400, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
@@ -908,10 +902,10 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		theWalls.push_back(new CSprite(CRectangle(550, 0, 20, 740), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(0, 0, 20, 800), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->SetProperty("tag", "part_1");
-		theWalls.push_back(new CSprite(CRectangle(0, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(0, 90, 150, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
 		theWalls.back()->SetProperty("tag", "part_1");
-		theWalls.push_back(new CSprite(CRectangle(370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(420, 90, 150, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
 		theWalls.back()->SetProperty("tag", "part_1");
 		theWalls.push_back(new CSprite(CRectangle(0, 450, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
@@ -933,11 +927,12 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		bluePortal.back()->SetProperty("tag", "part_1");
 
 		//second half of level
+		theWalls.push_back(new CSprite(CRectangle(0, 800, 600, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->SetProperty("tag", "part_2");
-		theWalls.push_back(new CSprite(CRectangle(1000, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(1000, 90, 150, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(20);
 		theWalls.back()->SetProperty("tag", "part_2");
-		theWalls.push_back(new CSprite(CRectangle(1370, 90, 200, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
+		theWalls.push_back(new CSprite(CRectangle(1420, 90, 150, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->Rotate(-20);
 		theWalls.back()->SetProperty("tag", "part_2");
 		theWalls.push_back(new CSprite(CRectangle(1000, 450, 100, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
@@ -962,20 +957,13 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 		collectibles.back()->SetProperty("tag", "part_2");
 		blackHoles.push_back(new CSprite(CRectangle(1030, 750, 24 * 3, 24 * 3), "Bhole.bmp", CColor::Blue(), GetTime()));
 		blackHoles.back()->SetProperty("tag", "part_2");
-		blackHoles.push_back(new CSprite(CRectangle(1480, 750, 24 * 3, 24 * 3), "Bhole.bmp", CColor::Blue(), GetTime()));
-		blackHoles.back()->SetProperty("tag", "part_2");
+		//blackHoles.push_back(new CSprite(CRectangle(1480, 750, 24 * 3, 24 * 3), "Bhole.bmp", CColor::Blue(), GetTime()));
+		//blackHoles.back()->SetProperty("tag", "part_2");
 
 		//portals
 		orangePortal.push_back(new CSprite(CRectangle(1020, 470, 64, 64), "Portal_red.png", GetTime()));
 		orangePortal.back()->SetProperty("tag", "part_2");
 		break;
-	case 5:
-		
-		theWalls.push_back(new CSprite(CRectangle(0, 90, 500, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(20);
-		theWalls.push_back(new CSprite(CRectangle(370, 90, 500, 20), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->Rotate(-20);
-		collectibles.push_back(new CSprite(CRectangle(150, 250, 18, 48), "Fuel rod.png", GetTime()));
 	}
 
 	// In all levels
@@ -987,6 +975,9 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 
 	theWalls.push_back(new CSprite(CRectangle(550, 990, 20, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
 
+	theFlippers.push_back(new CSprite(CRectangle(430, 37, 135, 36), "FlipperR.bmp", CColor::Blue(), GetTime()));
+	theFlippers.push_back(new CSprite(CRectangle(50, 36, 135, 36), "FlipperL.bmp", CColor::Blue(), GetTime()));
+	
 
 	m_bLevelCompleted = false;
 }
