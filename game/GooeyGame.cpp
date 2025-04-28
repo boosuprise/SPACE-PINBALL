@@ -823,7 +823,7 @@ void CGooeyGame::OnStartLevel(Sint16 nLevel)
 	orangePortal.clear();
 
 	// create the new playfield, depending on the current level
-	m_nCurLevel = 4;
+	m_nCurLevel = 1;
 	switch (m_nCurLevel)
 	{
 	// Level 1
@@ -1011,13 +1011,11 @@ void CGooeyGame::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode)
 
 	if (sym == SDLK_SPACE && IsGameMode() && endCannonReady == true)
 	{
-		CVector endCannonNozzle(270, 80);
-		//float x = cos(DEG2RAD(endCannon.GetRotation()));
-		float x = sin((endCannon.GetRotation() + 1) * 300);
-		float y = cos((endCannon.GetRotation() + 1) * 400);
-		cout << x;
+		CVector endCannonNozzle(endCannon.GetX(), 80);
 		theMarble.SetPosition(endCannonNozzle);
-		theMarble.Accelerate(750 * Normalize(CVector(x, y) - endCannon.GetPosition()));
+		theMarble.SetDirection(endCannon.GetRotation());
+		theMarble.SetSpeed(750);
+		
 		endCannonReady = false;
 	}
 	
@@ -1082,7 +1080,7 @@ void CGooeyGame::OnLButtonDown(Uint16 x, Uint16 y)
 	}
 
 	// In game mode, if the marble isn't moving yet, the mouse click will start aiming mode
-	if (IsGameMode() && !m_pButtonPressed)
+	if (IsGameMode() && !m_pButtonPressed && endCannonReady == false)
 	{
 		theBarrel.SetRotation(theBarrel.GetY() - y, x - theBarrel.GetX());
 		if (theMarble.GetSpeed() == 0)
